@@ -1,0 +1,33 @@
+Cree un algoritmo que le pida 2 números al usuario, los guarde en dos variables distintas (primero y segundo) y los ordene de menor a mayor en dichas variables.
+Ejemplos:
+A: 56, B: 32 → A: 32, B: 56
+A: 24, B: 76 → A: 24, B: 76
+A: 45, B: 12 → A: 12, B: 45
+
+1. Inicio
+
+2. Definir primero
+
+3. Definir segundo
+
+4. Definir auxiliar
+
+5. Mostrar "Ingrese el primer numero"
+
+6. Pedir primero
+
+7. Mostrar "Ingrese el segundo numero"
+
+8. Pedir segundo
+
+9. Si (primero > segundo) entonces:
+
+	a. auxiliar = primero
+	b. primero = segundo
+	c. segundo = auxiliar
+
+FinSi
+
+10. Mostrar "A: " + primero + " B: " + segundo
+
+11. Fin
