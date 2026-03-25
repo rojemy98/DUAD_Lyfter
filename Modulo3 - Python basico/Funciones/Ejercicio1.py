@@ -83,6 +83,7 @@ Cree una función que imprima el número de mayúsculas y el número de minúscu
 
 """
 
+
 def count_letters(text):
     uppercase_count = 0
     lowercase_count = 0
@@ -117,7 +118,6 @@ def order_words(text):
 
 
 print(order_words("python-variable-funcion-computadora-monitor"))
-
 
 
 """
