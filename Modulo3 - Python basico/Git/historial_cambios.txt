@@ -1,0 +1,23 @@
+commit 382485ce25f4ef0f21fc3d76889454c19c858358 (origin/main, origin/HEAD, main)
+Author: rojemy98 <roje.diaz@gmail.com>
+Date:   Wed Mar 25 10:04:17 2026 -0600
+
+Qué cambió:
+
+Este fue el comit inicial donde se creo el repositorio con el branch main y el README.md
+
+Por qué se hizo ese cambio:
+
+Se realizo para poder crear el repositorio que almacenara los ejercicios y proyectos de Lyfter.
+
+commit 486069f63a3b839898733d127cf5f0d234e0ec21 (HEAD -> ejercicios-listos, origin/ejercicios-listos)
+Author: Rojemy <roje.diaz@gmail.com>
+Date:   Wed Mar 25 10:34:58 2026 -0600
+
+Qué cambió:
+
+Se agregaron los archivos del staging desde la rama "ejercicios-listos".
+
+Por qué se hizo ese cambio:
+
+Este cambio se realizo para enviar los cambios al repositorio mediante y posteriormente poder generar el pull request .

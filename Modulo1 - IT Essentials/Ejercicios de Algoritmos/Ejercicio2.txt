@@ -1,0 +1,53 @@
+Cree un algoritmo que describa su rutina diaria. Use condiciones, condiciones multiples y ciclos.
+
+1. inicio
+
+2. Levantarse de la cama
+
+3. Ingresar al bano
+
+	1. Mojar cuerpo
+
+	2. Enjabonar cuerpo
+
+	3. Mientras cuerpo tenga jabon
+
+		1. Enjuagar cuerpo con agua
+
+	4. Secar cuerpo
+
+	5. Ponerme ropa
+
+5. ir a recoger a Nyjah
+
+6. LLevar a Nyjah a la guarderia
+
+7. Volver a mi casa
+
+8. Hacer desayuno
+
+9.Trabajar
+
+10. Hacer almuerzo
+
+11.Trabajar
+
+12. Recoger a Nyjah de la guarderia
+
+13. Llevar a Nyjah a su casa
+
+14. Si el dia es Lunes
+
+	1. Ir a jugar futbol
+
+15. Sino:
+
+	1. Ir al gimnasio
+
+16. Volver a la casa
+
+15. Preparar cena
+
+16. Dormir
+
+17. Fin

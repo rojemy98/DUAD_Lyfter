@@ -1,0 +1,27 @@
+Cree un algoritmo para ver un video en Youtube. Sea lo mÃ¡s especifico posible.
+
+1. Inicio
+
+2. Si tiene computadora:
+
+	1. Abrir navegador de su preferencia
+
+	2. Ingresar a youtube.com
+
+		1. Esribir en la barra de busqueda video a reproducir, precionar Enter
+
+		2. Hacer click sobre video a reproducir
+
+3. Sino, si tiene smartphone, o si tiene tablet, o si tiene smart TV:
+
+	1. Ingresar a la app de Netflix
+
+		1. Esribir en la barra de busqueda video a reproducir, precionar Enter
+
+Â 		2. Seleccionar video a reproducir
+
+4.Sino:
+
+	1. Repetir hasta que encuentre a alguien que si tenga alguno de los anteriores y pidaselo prestado.
+
+5. Fin
