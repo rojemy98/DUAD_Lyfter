@@ -17,6 +17,9 @@ def display_menu():
         if option == "1":
             actions.insert_student()
 
+        elif option == "2":
+            actions.get_all_students()
+
         elif option == "7":
             print("Goodbye!")
             break

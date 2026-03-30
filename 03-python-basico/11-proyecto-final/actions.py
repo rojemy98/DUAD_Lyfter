@@ -87,3 +87,40 @@ def insert_student():
         print("\nStudent registered successfully")
     else:
         print("\nStudents registered successfully")
+
+
+def get_all_students():
+    """
+    Retrieve and display all student records stored in the global list.
+    """
+
+    # Check if the students list is empty
+    if not students:
+        print("\nNo students registered.\n")
+        return  # Exit the function early if no data is available
+
+    print("\n=== Student List ===\n")
+
+    # Iterate through the list of students with an index starting at 1
+    for i, student in enumerate(students, start=1):
+        try:
+            # Display student basic information
+            print(f"Student #{i}")
+            print(f"Name: {student['name']}")
+            print(f"Section: {student['section']}")
+
+            # Display student grades
+            print(f"Spanish: {student['spanish_grade']}")
+            print(f"English: {student['english_grade']}")
+            print(f"Social Studies: {student['social_studies_grade']}")
+            print(f"Science: {student['science_grade']}")
+
+            # Print a visual separator between students
+            print("-" * 30)
+
+        except KeyError as e:
+            # Handle missing keys in the student dictionary
+            print(f"Error: Missing data for {e} in student #{i}")
+        except Exception as e:
+            # Catch any unexpected errors to prevent program crash
+            print(f"Unexpected error while displaying student #{i}: {e}")
