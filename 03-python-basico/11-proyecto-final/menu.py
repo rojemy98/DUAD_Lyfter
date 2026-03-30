@@ -1,11 +1,25 @@
+import actions
+
 def display_menu():
     while True:
 
-        print("\n*** Sistema Control de Estudiantes ***")
-        print("1. Ingresar nuevo estudiante")
-        print("2. Listar todos los estudiantes")
-        print("3. Top 3 - Mejores promedios")
-        print("4. Ver nota promedio entre las notas de todos los estudiantes")
-        print("5. Exportar datos a CSV")
-        print("6. Importar datos de un CSV (previamente exportado)")
-        print("7. Salir")
+        print("\n*** Student Management System ***\n")
+        print("1. Add new student")
+        print("2. List all students")
+        print("3. Top 3 - Highest averages")
+        print("4. View overall average grade of all students")
+        print("5. Export data to CSV")
+        print("6. Import data from a CSV (previously exported)")
+        print("7. Exit")
+
+        option = input("\nChoose an option: ")
+
+        if option == "1":
+            actions.insert_student()
+
+        elif option == "7":
+            print("Goodbye!")
+            break
+
+        else:
+            print("Invalid option")
