@@ -220,3 +220,46 @@ def get_top3_average_grades():
         # Handle errors during sorting
         print(f"Error while processing top students: {e}")
 
+
+def get_students_overall_average():
+    """
+    Retrieve and display the overall average grade across all students.
+    This represents the average of each student's individual average grade.
+    """
+
+    # Validate that there are students registered
+    if not students:
+        print("\nNo students registered.\n")
+        return  # Exit early if no data is available
+
+    list_of_averages = []
+
+    try:
+        # Calculate the average for each student and store it in a list
+        for i, student in enumerate(students, start=1):
+            try:
+                avg = get_average(student)  # Reuse existing function
+                list_of_averages.append(avg)
+            except Exception as e:
+                # Handle unexpected errors per student without stopping the loop
+                print(f"Error processing student #{i}: {e}")
+
+        # Ensure we have valid averages before calculating the final result
+        if not list_of_averages:
+            print("\nNo valid student averages available.\n")
+            return
+
+        # Calculates overall average (average of averages)
+        overall_average = sum(list_of_averages) / len(list_of_averages)
+
+        # Display result in a formatted way
+        print("-" * 53)
+        print(f"\nThe overall average grade of all students is: {overall_average:.2f}\n")
+        print("-" * 53)
+
+    except ZeroDivisionError:
+        # Handle division by zero (extra safety, though already validated)
+        print("Error: Cannot calculate average due to division by zero.")
+    except Exception as e:
+        # Catch any unexpected error in the overall process
+        print(f"Unexpected error while calculating overall average: {e}")
