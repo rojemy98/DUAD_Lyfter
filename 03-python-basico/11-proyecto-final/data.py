@@ -36,7 +36,9 @@ def export_students_to_csv(path="students.csv"):
             writer.writerows(actions.students)
 
         # Confirmation message after successful export
+        print("-" * 42)
         print(f"\nData successfully exported to {path}\n")
+        print("-" * 42)
 
     except Exception as e:
         # Handle any unexpected error during file writing
@@ -86,7 +88,9 @@ def import_students_from_csv(path="students.csv"):
                     print(f"Invalid data format in row #{i}")
 
         # Confirmation message after successful import
+        print("-" * 44)
         print(f"\nData successfully imported from {path}\n")
+        print("-" * 44)
 
     except Exception as e:
         # Handle any unexpected error during file reading
