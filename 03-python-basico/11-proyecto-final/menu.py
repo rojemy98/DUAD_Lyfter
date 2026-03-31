@@ -3,7 +3,7 @@ import actions
 def display_menu():
     while True:
 
-        print("\n*** Student Management System ***\n")
+        print("\n=== Student Management System ===\n")
         print("1. Add new student")
         print("2. List all students")
         print("3. Top 3 - Highest averages")
@@ -19,6 +19,9 @@ def display_menu():
 
         elif option == "2":
             actions.get_all_students()
+
+        elif option == "3":
+            actions.get_top3_average_grades()
 
         elif option == "7":
             print("Goodbye!")

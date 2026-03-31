@@ -1,4 +1,37 @@
-students = []  # Global list to store all student records
+students = [  # Global list to store all student records
+    {
+        "name": "Juan Perez",
+        "section": "10A",
+        "spanish_grade": 85,
+        "english_grade": 90,
+        "social_studies_grade": 88,
+        "science_grade": 92
+    },
+    {
+        "name": "Maria Gonzalez",
+        "section": "11B",
+        "spanish_grade": 95,
+        "english_grade": 93,
+        "social_studies_grade": 91,
+        "science_grade": 94
+    },
+    {
+        "name": "Carlos Ramirez",
+        "section": "11A",
+        "spanish_grade": 78,
+        "english_grade": 82,
+        "social_studies_grade": 80,
+        "science_grade": 76
+    },
+    {
+        "name": "Ana Lopez",
+        "section": "9C",
+        "spanish_grade": 88,
+        "english_grade": 87,
+        "social_studies_grade": 90,
+        "science_grade": 89
+    }
+] 
 
 
 def get_valid_grade(subject):
@@ -124,3 +157,66 @@ def get_all_students():
         except Exception as e:
             # Catch any unexpected errors to prevent program crash
             print(f"Unexpected error while displaying student #{i}: {e}")
+
+
+def get_average(student):
+    """
+    Calculate and return the average grade of a student.
+    """
+    try:
+        return (
+            student["spanish_grade"] +
+            student["english_grade"] +
+            student["social_studies_grade"] +
+            student["science_grade"]
+        ) / 4
+    except KeyError as e:
+        # Handle missing grade fields in the dictionary
+        print(f"Missing key in student data: {e}")
+        return 0
+    except Exception as e:
+        # Handle any unexpected error
+        print(f"Unexpected error while calculating average: {e}")
+        return 0
+
+
+def get_top3_average_grades():
+    """
+    Retrieve and display the top 3 students with the highest average grades.
+    """
+
+    # Check if there are students registered
+    if not students:
+        print("\nNo students registered.\n")
+        return 
+
+    try:
+        # Sort students using a helper function
+        sorted_students = sorted(
+            students,
+            key=get_average,   # Function used to calculate sorting value
+            reverse=True      # Sort from highest to lowest
+        )
+
+        # Get the top 3 students (safe even if there are less than 3)
+        top3 = sorted_students[:3]
+
+        print("\n=== Top 3 Students ===\n")
+
+        # Display results
+        for i, student in enumerate(top3, start=1):
+            try:
+                avg = get_average(student)
+
+                print(f"#{i} {student.get('name', 'N/A')}")
+                print(f"Average: {avg:.2f}")
+                print("-" * 30)
+
+            except Exception as e:
+                # Handle unexpected errors while displaying a student
+                print(f"Error displaying student #{i}: {e}")
+
+    except Exception as e:
+        # Handle errors during sorting
+        print(f"Error while processing top students: {e}")
+
