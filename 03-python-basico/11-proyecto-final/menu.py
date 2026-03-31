@@ -1,4 +1,5 @@
 import actions
+import data
 
 def display_menu():
     while True:
@@ -25,6 +26,9 @@ def display_menu():
 
         elif option == "4":
             actions.get_students_overall_average()
+
+        elif option == "5":
+            data.export_students_to_csv()
 
         elif option == "7":
             print("Goodbye!")
