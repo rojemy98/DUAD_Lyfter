@@ -30,6 +30,9 @@ def display_menu():
         elif option == "5":
             data.export_students_to_csv()
 
+        elif option == "6":
+            data.import_students_from_csv()
+
         elif option == "7":
             print("Goodbye!")
             break
