@@ -28,7 +28,8 @@ def display_menu():
         print("4. View overall average grade of all students")
         print("5. Export data to CSV")
         print("6. Import data from a CSV (previously exported)")
-        print("7. Exit")
+        print("7. Delete Student)")
+        print("8. Exit")
 
         option = input("\nChoose an option: ")
 
@@ -49,6 +50,9 @@ def display_menu():
 
         elif option == "6":
             data.import_students_from_csv()
+
+        elif option == "7":
+            actions.delete_student()
 
         elif option == "7":
             print("Goodbye!")

@@ -263,3 +263,45 @@ def get_students_overall_average():
     except Exception as e:
         # Catch any unexpected error in the overall process
         print(f"Unexpected error while calculating overall average: {e}")
+
+
+def delete_student():
+    """
+    Delete a student from the global list based on name and section.
+    Validates existence and asks for user confirmation before deletion.
+    """
+
+    # Check if there are students registered
+    if not students:
+        print("\nNo students registered.\n")
+        return
+
+    # Get input from user
+    name = input("Enter the student name to delete: ").strip()
+    section = input("Enter the student section: ").strip()
+
+    try:
+        # Search for the student
+        for i, student in enumerate(students):
+            if (
+                student.get("name", "").lower() == name.lower() and
+                student.get("section", "").lower() == section.lower()
+            ):
+                # Student found → ask for confirmation
+                confirm = input(
+                    f"Are you sure you want to delete {student['name']} from section {student['section']}? (y/n): "
+                ).strip().lower()
+
+                if confirm == "y":
+                    students.pop(i)  # Remove student by index
+                    print("\nStudent deleted successfully.\n")
+                else:
+                    print("\nOperation cancelled.\n")
+
+                return  # Exit after handling
+
+        # If loop finishes → student not found
+        print("\nStudent not found.\n")
+
+    except Exception as e:
+        print(f"Error while deleting student: {e}")
