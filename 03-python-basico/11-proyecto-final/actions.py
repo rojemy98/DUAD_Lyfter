@@ -1,3 +1,5 @@
+import re
+
 students = [  # Global list to store all student records
     {
         "name": "Juan Perez",
@@ -67,6 +69,21 @@ def get_valid_number(prompt):
             # Handle invalid numeric input
             print("Invalid input. Please enter a valid number.")
 
+def get_valid_name(prompt):
+    """
+    Prompt the user to enter a valid name.
+    The name must not contain numbers and cannot be empty.
+    """
+    while True:
+        name = input(prompt).strip()
+
+        if not name:
+            print("This field cannot be empty.")
+        elif any(char.isdigit() for char in name):
+            print("Name cannot contain numbers.")
+        else:
+            return name
+
 
 def get_non_empty_input(prompt):
     """
@@ -93,7 +110,7 @@ def insert_student():
         print(f"\n--- Student {i + 1} ---")
 
         # Collect the student information
-        name = get_non_empty_input("Enter the student name: ")
+        name = get_valid_name("Enter the student name: ")
         section = get_non_empty_input("Enter the student section: ")
 
         # Collect validated grades for each subject
