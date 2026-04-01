@@ -4,8 +4,8 @@ students = [  # Global list to store all student records
         "section": "10A",
         "spanish_grade": 85,
         "english_grade": 90,
-        "social_studies_grade": 88,
-        "science_grade": 92
+        "social_studies_grade": 60,
+        "science_grade": 58
     },
     {
         "name": "Maria Gonzalez",
@@ -27,7 +27,7 @@ students = [  # Global list to store all student records
         "name": "Ana Lopez",
         "section": "9C",
         "spanish_grade": 88,
-        "english_grade": 87,
+        "english_grade": 55,
         "social_studies_grade": 90,
         "science_grade": 89
     }
@@ -305,3 +305,62 @@ def delete_student():
 
     except Exception as e:
         print(f"Error while deleting student: {e}")
+
+
+def get_failed_students():
+    """
+    Retrieve and display students who have failed at least one subject.
+    A subject is considered failed if the grade is below 60.
+    """
+
+    # Check if there are students registered
+    if not students:
+        print("\nNo students registered.\n")
+        return
+
+    found = False  # Flag to track if any failed students exist
+
+    print("\n=== Failed Students ===\n")
+
+    try:
+        # Iterate through each student
+        for i, student in enumerate(students, start=1):
+            try:
+                # Dictionary of subjects and their grades
+                subjects = {
+                    "Spanish": student.get("spanish_grade"),
+                    "English": student.get("english_grade"),
+                    "Social Studies": student.get("social_studies_grade"),
+                    "Science": student.get("science_grade")
+                }
+
+                # Find failed subjects (grade < 60)
+                failed_subjects = {
+                    subject: grade
+                    for subject, grade in subjects.items()
+                    if isinstance(grade, (int, float)) and grade < 60
+                }
+
+                # If student has at least one failed subject
+                if failed_subjects:
+                    found = True
+
+                    print(f"Student #{i}")
+                    print(f"Name: {student.get('name', 'N/A')}")
+                    print(f"Section: {student.get('section', 'N/A')}")
+
+                    print("Failed Subjects:")
+                    for subject, grade in failed_subjects.items():
+                        print(f" - {subject}: {grade}")
+
+                    print("-" * 30)
+
+            except Exception as e:
+                print(f"Error processing student #{i}: {e}")
+
+        # If no failed students were found
+        if not found:
+            print("No students with failed subjects.\n")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
