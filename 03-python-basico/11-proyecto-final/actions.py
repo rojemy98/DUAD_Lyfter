@@ -69,6 +69,7 @@ def get_valid_number(prompt):
             # Handle invalid numeric input
             print("Invalid input. Please enter a valid number.")
 
+
 def get_valid_name(prompt):
     """
     Prompt the user to enter a valid name.
@@ -128,45 +129,76 @@ def get_valid_section(prompt):
             print(f"Unexpected error while reading section: {e}")
 
 
+def student_exists(name, section):
+    """
+    Check if a student already exists in the list
+    based on name and section.
+    """
+    for student in students:
+        if (
+            student.get("name", "").lower() == name.lower() and
+            student.get("section", "").lower() == section.lower()
+        ):
+            return True
+    return False
+
+
 def insert_student():
     """
     Register one or more students by collecting their personal information
     and grades. Stores each student as a dictionary in the global list.
     """
-    # Get number of students to register
-    n = get_valid_number("Enter the quantity of students you want to register: ")
 
-    for i in range(n):
-        print(f"\n--- Student {i + 1} ---")
+    try:
+        # Get number of students to register (validated input)
+        n = get_valid_number("Enter the quantity of students you want to register: ")
 
-        # Collect the student information
-        name = get_valid_name("Enter the student name: ")
-        section = get_valid_section("Enter the student section: ")
+        for i in range(n):
+            print(f"\n--- Student {i + 1} ---")
 
-        # Collect validated grades for each subject
-        spanish_grade = get_valid_grade("Spanish")
-        english_grade = get_valid_grade("English")
-        social_studies_grade = get_valid_grade("Social Studies")
-        science_grade = get_valid_grade("Science")
+            try:
+                # Collect student name and section
+                name = get_valid_name("Enter the student name: ")
+                section = get_valid_section("Enter the student section: ")
 
-        # Create student record as a dictionary
-        new_student = {
-            "name": name,
-            "section": section,
-            "spanish_grade": spanish_grade,
-            "english_grade": english_grade,
-            "social_studies_grade": social_studies_grade,
-            "science_grade": science_grade
-        }
+                # Validate that the student does not already exist
+                while student_exists(name, section):
+                    print("\nStudent already exists. Please enter different data.\n")
+                    name = get_valid_name("Enter the student name: ")
+                    section = get_valid_section("Enter the student section: ")
 
-        # Add student to the global list
-        students.append(new_student)
+                # Collect validated grades for each subject
+                spanish_grade = get_valid_grade("Spanish")
+                english_grade = get_valid_grade("English")
+                social_studies_grade = get_valid_grade("Social Studies")
+                science_grade = get_valid_grade("Science")
 
-    # Display confirmation message based on number of students registered
-    if n == 1:
-        print("\nStudent registered successfully")
-    else:
-        print("\nStudents registered successfully")
+                # Create student record as a dictionary
+                new_student = {
+                    "name": name,
+                    "section": section,
+                    "spanish_grade": spanish_grade,
+                    "english_grade": english_grade,
+                    "social_studies_grade": social_studies_grade,
+                    "science_grade": science_grade
+                }
+
+                # Add student to the global list
+                students.append(new_student)
+
+            except Exception as e:
+                # Handle errors per student without stopping the entire process
+                print(f"Error registering student #{i + 1}: {e}")
+
+        # Display confirmation message based on number of students registered
+        if n == 1:
+            print("\nStudent registered successfully")
+        else:
+            print("\nStudents registered successfully")
+
+    except Exception as e:
+        # Handle unexpected errors in the overall process
+        print(f"Unexpected error while inserting students: {e}")
 
 
 def get_all_students():
