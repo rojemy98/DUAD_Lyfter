@@ -74,28 +74,58 @@ def get_valid_name(prompt):
     Prompt the user to enter a valid name.
     The name must not contain numbers and cannot be empty.
     """
+
     while True:
-        name = input(prompt).strip()
+        try:
+            # Get user input and remove leading/trailing spaces
+            name = input(prompt).strip()
 
-        if not name:
-            print("This field cannot be empty.")
-        elif any(char.isdigit() for char in name):
-            print("Name cannot contain numbers.")
-        else:
-            return name
+            # Validate that the input is not empty
+            if not name:
+                print("This field cannot be empty.")
+
+            # Validate that the name does not contain digits
+            elif any(char.isdigit() for char in name):
+                print("Name cannot contain numbers.")
+
+            else:
+                # Return valid name
+                return name
+
+        except Exception as e:
+            # Handle unexpected input errors (rare but safe)
+            print(f"Unexpected error while reading name: {e}")
 
 
-def get_non_empty_input(prompt):
+def get_valid_section(prompt):
     """
-    Prompt the user to enter a non-empty string.
-    Trims whitespace and validates that input is not empty.
+    Prompt the user to enter a valid section.
+    Format must be: number + uppercase letter (e.g., 11A, 8B, 10C).
     """
+
+    # Regular expression pattern: one or more digits followed by one uppercase letter
+    pattern = r"^\d+[A-Z]$"
+
     while True:
-        value = input(prompt).strip()
-        if value:
-            return value  # Return valid non-empty string
-        else:
-            print("This field cannot be empty.")
+        try:
+            # Get user input, remove spaces, and normalize to uppercase
+            section = input(prompt).strip().upper()
+
+            # Validate that the input is not empty
+            if not section:
+                print("This field cannot be empty.")
+
+            # Validate format using regex
+            elif not re.match(pattern, section):
+                print("Invalid section format. Use format like 11A, 8B, 10C.")
+
+            else:
+                # Return valid section
+                return section
+
+        except Exception as e:
+            # Handle unexpected errors (e.g., regex issues, input problems)
+            print(f"Unexpected error while reading section: {e}")
 
 
 def insert_student():
@@ -111,7 +141,7 @@ def insert_student():
 
         # Collect the student information
         name = get_valid_name("Enter the student name: ")
-        section = get_non_empty_input("Enter the student section: ")
+        section = get_valid_section("Enter the student section: ")
 
         # Collect validated grades for each subject
         spanish_grade = get_valid_grade("Spanish")
