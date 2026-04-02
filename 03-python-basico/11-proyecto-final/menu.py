@@ -1,3 +1,4 @@
+from main import students 
 import actions
 import data
 
@@ -28,35 +29,35 @@ def display_menu():
         print("4. View overall average grade of all students")
         print("5. Failed students")
         print("6. Export data to CSV")
-        print("6. Import data from a CSV (previously exported)")
+        print("7. Import data from a CSV (previously exported)")
         print("8. Delete Student")
         print("9. Exit")
 
         option = input("\nChoose an option: ")
 
         if option == "1":
-            actions.insert_student()
+            actions.insert_student(students)
 
         elif option == "2":
-            actions.get_all_students()
+            actions.get_all_students(students)
 
         elif option == "3":
-            actions.get_top3_average_grades()
+            actions.get_top3_average_grades(students)
 
         elif option == "4":
-            actions.get_students_overall_average()
+            actions.get_students_overall_average(students)
 
         elif option == "5":
-            actions.get_failed_students()
+            actions.get_failed_students(students)
 
         elif option == "6":
-            data.export_students_to_csv()
+            data.export_students_to_csv(students)
 
         elif option == "7":
-            data.import_students_from_csv()
+            students = data.import_students_from_csv()
 
         elif option == "8":
-            actions.delete_student()
+            actions.delete_student(students)
 
         elif option == "9":
             print("Goodbye!")

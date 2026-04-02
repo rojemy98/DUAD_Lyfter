@@ -1,445 +1,220 @@
 import re
 
-students = [  # Global list to store all student records
-    {
-        "name": "Juan Perez",
-        "section": "10A",
-        "spanish_grade": 85,
-        "english_grade": 90,
-        "social_studies_grade": 60,
-        "science_grade": 58
-    },
-    {
-        "name": "Maria Gonzalez",
-        "section": "11B",
-        "spanish_grade": 95,
-        "english_grade": 93,
-        "social_studies_grade": 91,
-        "science_grade": 94
-    },
-    {
-        "name": "Carlos Ramirez",
-        "section": "11A",
-        "spanish_grade": 78,
-        "english_grade": 82,
-        "social_studies_grade": 80,
-        "science_grade": 76
-    },
-    {
-        "name": "Ana Lopez",
-        "section": "9C",
-        "spanish_grade": 88,
-        "english_grade": 55,
-        "social_studies_grade": 90,
-        "science_grade": 89
-    }
-] 
-
 
 def get_valid_grade(subject):
     """
-    Prompt the user to enter a valid grade (0–100) for a given subject.
-    Continues asking until a valid integer within range is provided.
+    Ask the user for a grade between 0 and 100.
+    Keeps asking until a valid integer is entered.
     """
     while True:
         try:
             grade = int(input(f"Enter {subject} grade (0-100): "))
             if 0 <= grade <= 100:
-                return grade  # Return valid grade and exit loop
-            else:
-                print("Invalid grade. Must be between 0 and 100.")
+                return grade
+            print("Invalid grade. Must be between 0 and 100.")
         except ValueError:
-            # Handle non-integer inputs
             print("Invalid input. Please enter a number.")
 
 
 def get_valid_number(prompt):
     """
-    Prompt the user to enter a positive integer.
-    Ensures the value is greater than zero.
+    Ask the user for a positive integer (> 0).
     """
     while True:
         try:
             value = int(input(prompt))
             if value > 0:
-                return value  # Return valid number
-            else:
-                print("Number must be greater than 0.")
+                return value
+            print("Number must be greater than 0.")
         except ValueError:
-            # Handle invalid numeric input
             print("Invalid input. Please enter a valid number.")
 
 
 def get_valid_name(prompt):
     """
-    Prompt the user to enter a valid name.
-    The name must not contain numbers and cannot be empty.
+    Ask for a valid name (no numbers, not empty).
     """
-
     while True:
-        try:
-            # Get user input and remove leading/trailing spaces
-            name = input(prompt).strip()
+        name = input(prompt).strip()
 
-            # Validate that the input is not empty
-            if not name:
-                print("This field cannot be empty.")
-
-            # Validate that the name does not contain digits
-            elif any(char.isdigit() for char in name):
-                print("Name cannot contain numbers.")
-
-            else:
-                # Return valid name
-                return name
-
-        except Exception as e:
-            # Handle unexpected input errors (rare but safe)
-            print(f"Unexpected error while reading name: {e}")
+        if not name:
+            print("This field cannot be empty.")
+        elif any(char.isdigit() for char in name):
+            print("Name cannot contain numbers.")
+        else:
+            return name
 
 
 def get_valid_section(prompt):
     """
-    Prompt the user to enter a valid section.
-    Format must be: number + uppercase letter (e.g., 11A, 8B, 10C).
+    Ask for a valid section (e.g., 10A, 8B).
     """
-
-    # Regular expression pattern: one or more digits followed by one uppercase letter
     pattern = r"^\d+[A-Z]$"
 
     while True:
-        try:
-            # Get user input, remove spaces, and normalize to uppercase
-            section = input(prompt).strip().upper()
+        section = input(prompt).strip().upper()
 
-            # Validate that the input is not empty
-            if not section:
-                print("This field cannot be empty.")
-
-            # Validate format using regex
-            elif not re.match(pattern, section):
-                print("Invalid section format. Use format like 11A, 8B, 10C.")
-
-            else:
-                # Return valid section
-                return section
-
-        except Exception as e:
-            # Handle unexpected errors (e.g., regex issues, input problems)
-            print(f"Unexpected error while reading section: {e}")
-
-
-def student_exists(name, section):
-    """
-    Check if a student already exists in the list
-    based on name and section.
-    """
-    for student in students:
-        if (
-            student.get("name", "").lower() == name.lower() and
-            student.get("section", "").lower() == section.lower()
-        ):
-            return True
-    return False
-
-
-def insert_student():
-    """
-    Register one or more students by collecting their personal information
-    and grades. Stores each student as a dictionary in the global list.
-    """
-
-    try:
-        # Get number of students to register (validated input)
-        n = get_valid_number("Enter the quantity of students you want to register: ")
-
-        for i in range(n):
-            print(f"\n--- Student {i + 1} ---")
-
-            try:
-                # Collect student name and section
-                name = get_valid_name("Enter the student name: ")
-                section = get_valid_section("Enter the student section: ")
-
-                # Validate that the student does not already exist
-                while student_exists(name, section):
-                    print("\nStudent already exists. Please enter different data.\n")
-                    name = get_valid_name("Enter the student name: ")
-                    section = get_valid_section("Enter the student section: ")
-
-                # Collect validated grades for each subject
-                spanish_grade = get_valid_grade("Spanish")
-                english_grade = get_valid_grade("English")
-                social_studies_grade = get_valid_grade("Social Studies")
-                science_grade = get_valid_grade("Science")
-
-                # Create student record as a dictionary
-                new_student = {
-                    "name": name,
-                    "section": section,
-                    "spanish_grade": spanish_grade,
-                    "english_grade": english_grade,
-                    "social_studies_grade": social_studies_grade,
-                    "science_grade": science_grade
-                }
-
-                # Add student to the global list
-                students.append(new_student)
-
-            except Exception as e:
-                # Handle errors per student without stopping the entire process
-                print(f"Error registering student #{i + 1}: {e}")
-
-        # Display confirmation message based on number of students registered
-        if n == 1:
-            print("\nStudent registered successfully")
+        if not section:
+            print("This field cannot be empty.")
+        elif not re.match(pattern, section):
+            print("Invalid format. Use format like 10A, 8B.")
         else:
-            print("\nStudents registered successfully")
-
-    except Exception as e:
-        # Handle unexpected errors in the overall process
-        print(f"Unexpected error while inserting students: {e}")
+            return section
 
 
-def get_all_students():
+def student_exists(students, name, section):
     """
-    Retrieve and display all student records stored in the global list.
+    Check if a student already exists in the list.
     """
+    return any(
+        s["name"].lower() == name.lower() and
+        s["section"].lower() == section.lower()
+        for s in students
+    )
 
-    # Check if the students list is empty
+
+def insert_students(students):
+    """
+    Add new students to the list and return updated list.
+    """
+    n = get_valid_number("Enter number of students: ")
+
+    for i in range(n):
+        print(f"\n--- Student {i + 1} ---")
+
+        name = get_valid_name("Enter name: ")
+        section = get_valid_section("Enter section: ")
+
+        while student_exists(students, name, section):
+            print("Student already exists.")
+            name = get_valid_name("Enter name: ")
+            section = get_valid_section("Enter section: ")
+
+        new_student = {
+            "name": name,
+            "section": section,
+            "spanish_grade": get_valid_grade("Spanish"),
+            "english_grade": get_valid_grade("English"),
+            "social_studies_grade": get_valid_grade("Social Studies"),
+            "science_grade": get_valid_grade("Science"),
+        }
+
+        students.append(new_student)
+
+    print("\nStudents registered successfully.\n")
+    return students
+
+
+def get_all_students(students):
+    """
+    Print all students in the list.
+    """
     if not students:
         print("\nNo students registered.\n")
-        return  # Exit the function early if no data is available
+        return
 
-    print("\n=== Student List ===\n")
-
-    # Iterate through the list of students with an index starting at 1
-    for i, student in enumerate(students, start=1):
-        try:
-            # Display student basic information
-            print(f"Student #{i}")
-            print(f"Name: {student['name']}")
-            print(f"Section: {student['section']}")
-
-            # Display student grades
-            print(f"Spanish: {student['spanish_grade']}")
-            print(f"English: {student['english_grade']}")
-            print(f"Social Studies: {student['social_studies_grade']}")
-            print(f"Science: {student['science_grade']}")
-
-            # Print a visual separator between students
-            print("-" * 30)
-
-        except KeyError as e:
-            # Handle missing keys in the student dictionary
-            print(f"Error: Missing data for {e} in student #{i}")
-        except Exception as e:
-            # Catch any unexpected errors to prevent program crash
-            print(f"Unexpected error while displaying student #{i}: {e}")
+    for i, s in enumerate(students, 1):
+        print(f"\nStudent #{i}")
+        print(f"Name: {s['name']}")
+        print(f"Section: {s['section']}")
+        print(f"Spanish: {s['spanish_grade']}")
+        print(f"English: {s['english_grade']}")
+        print(f"Social Studies: {s['social_studies_grade']}")
+        print(f"Science: {s['science_grade']}")
+        print("-" * 30)
 
 
 def get_average(student):
     """
-    Calculate and return the average grade of a student.
+    Calculate student's average grade.
     """
-    try:
-        return (
-            student["spanish_grade"] +
-            student["english_grade"] +
-            student["social_studies_grade"] +
-            student["science_grade"]
-        ) / 4
-    except KeyError as e:
-        # Handle missing grade fields in the dictionary
-        print(f"Missing key in student data: {e}")
-        return 0
-    except Exception as e:
-        # Handle any unexpected error
-        print(f"Unexpected error while calculating average: {e}")
-        return 0
+    return (
+        student["spanish_grade"] +
+        student["english_grade"] +
+        student["social_studies_grade"] +
+        student["science_grade"]
+    ) / 4
 
 
-def get_top3_average_grades():
+def get_top3_average_grades(students):
     """
-    Retrieve and display the top 3 students with the highest average grades.
+    Show top 3 students based on average grade.
     """
-
-    # Check if there are students registered
-    if not students:
-        print("\nNo students registered.\n")
-        return 
-
-    try:
-        # Sort students using a helper function
-        sorted_students = sorted(
-            students,
-            key=get_average,   # Function used to calculate sorting value
-            reverse=True      # Sort from highest to lowest
-        )
-
-        # Get the top 3 students (safe even if there are less than 3)
-        top3 = sorted_students[:3]
-
-        print("\n=== Top 3 Students ===\n")
-
-        # Display results
-        for i, student in enumerate(top3, start=1):
-            try:
-                avg = get_average(student)
-
-                print(f"#{i} {student.get('name', 'N/A')}")
-                print(f"Average: {avg:.2f}")
-                print("-" * 30)
-
-            except Exception as e:
-                # Handle unexpected errors while displaying a student
-                print(f"Error displaying student #{i}: {e}")
-
-    except Exception as e:
-        # Handle errors during sorting
-        print(f"Error while processing top students: {e}")
-
-
-def get_students_overall_average():
-    """
-    Retrieve and display the overall average grade across all students.
-    This represents the average of each student's individual average grade.
-    """
-
-    # Validate that there are students registered
-    if not students:
-        print("\nNo students registered.\n")
-        return  # Exit early if no data is available
-
-    list_of_averages = []
-
-    try:
-        # Calculate the average for each student and store it in a list
-        for i, student in enumerate(students, start=1):
-            try:
-                avg = get_average(student)  # Reuse existing function
-                list_of_averages.append(avg)
-            except Exception as e:
-                # Handle unexpected errors per student without stopping the loop
-                print(f"Error processing student #{i}: {e}")
-
-        # Ensure we have valid averages before calculating the final result
-        if not list_of_averages:
-            print("\nNo valid student averages available.\n")
-            return
-
-        # Calculates overall average (average of averages)
-        overall_average = sum(list_of_averages) / len(list_of_averages)
-
-        # Display result in a formatted way
-        print("-" * 53)
-        print(f"\nThe overall average grade of all students is: {overall_average:.2f}\n")
-        print("-" * 53)
-
-    except ZeroDivisionError:
-        # Handle division by zero (extra safety, though already validated)
-        print("Error: Cannot calculate average due to division by zero.")
-    except Exception as e:
-        # Catch any unexpected error in the overall process
-        print(f"Unexpected error while calculating overall average: {e}")
-
-
-def delete_student():
-    """
-    Delete a student from the global list based on name and section.
-    Validates existence and asks for user confirmation before deletion.
-    """
-
-    # Check if there are students registered
     if not students:
         print("\nNo students registered.\n")
         return
 
-    # Get input from user
-    name = input("Enter the student name to delete: ").strip()
-    section = input("Enter the student section: ").strip()
+    top3 = sorted(students, key=get_average, reverse=True)[:3]
 
-    try:
-        # Search for the student
-        for i, student in enumerate(students):
-            if (
-                student.get("name", "").lower() == name.lower() and
-                student.get("section", "").lower() == section.lower()
-            ):
-                # Student found → ask for confirmation
-                confirm = input(
-                    f"Are you sure you want to delete {student['name']} from section {student['section']}? (y/n): "
-                ).strip().lower()
-
-                if confirm == "y":
-                    students.pop(i)  # Remove student by index
-                    print("\nStudent deleted successfully.\n")
-                else:
-                    print("\nOperation cancelled.\n")
-
-                return  # Exit after handling
-
-        # If loop finishes → student not found
-        print("\nStudent not found.\n")
-
-    except Exception as e:
-        print(f"Error while deleting student: {e}")
+    print("\n=== Top 3 Students ===\n")
+    for i, s in enumerate(top3, 1):
+        print(f"#{i} {s['name']} - Avg: {get_average(s):.2f}")
 
 
-def get_failed_students():
+def get_students_overall_average(students):
     """
-    Retrieve and display students who have failed at least one subject.
-    A subject is considered failed if the grade is below 60.
+    Calculate overall average (average of all students' averages).
     """
-
-    # Check if there are students registered
     if not students:
         print("\nNo students registered.\n")
         return
 
-    found = False  # Flag to track if any failed students exist
+    averages = [get_average(s) for s in students]
+    overall = sum(averages) / len(averages)
+
+    print(f"\nOverall average: {overall:.2f}\n")
+
+
+def delete_student(students):
+    """
+    Remove a student from the list.
+    """
+    if not students:
+        print("\nNo students registered.\n")
+        return students
+
+    name = input("Enter name: ").strip()
+    section = input("Enter section: ").strip()
+
+    for i, s in enumerate(students):
+        if s["name"].lower() == name.lower() and s["section"].lower() == section.lower():
+            confirm = input(f"Delete {s['name']}? (y/n): ").lower()
+            if confirm == "y":
+                students.pop(i)
+                print("Student deleted.\n")
+            return students
+
+    print("Student not found.\n")
+    return students
+
+
+def get_failed_students(students):
+    """
+    Show students with at least one failed subject (<60).
+    """
+    if not students:
+        print("\nNo students registered.\n")
+        return
 
     print("\n=== Failed Students ===\n")
+    found = False
 
-    try:
-        # Iterate through each student
-        for i, student in enumerate(students, start=1):
-            try:
-                # Dictionary of subjects and their grades
-                subjects = {
-                    "Spanish": student.get("spanish_grade"),
-                    "English": student.get("english_grade"),
-                    "Social Studies": student.get("social_studies_grade"),
-                    "Science": student.get("science_grade")
-                }
+    for s in students:
+        failed = {
+            k: v for k, v in {
+                "Spanish": s["spanish_grade"],
+                "English": s["english_grade"],
+                "Social Studies": s["social_studies_grade"],
+                "Science": s["science_grade"]
+            }.items() if v < 60
+        }
 
-                # Find failed subjects (grade < 60)
-                failed_subjects = {
-                    subject: grade
-                    for subject, grade in subjects.items()
-                    if isinstance(grade, (int, float)) and grade < 60
-                }
+        if failed:
+            found = True
+            print(f"{s['name']} ({s['section']})")
+            for subject, grade in failed.items():
+                print(f" - {subject}: {grade}")
+            print("-" * 30)
 
-                # If student has at least one failed subject
-                if failed_subjects:
-                    found = True
-
-                    print(f"Student #{i}")
-                    print(f"Name: {student.get('name', 'N/A')}")
-                    print(f"Section: {student.get('section', 'N/A')}")
-
-                    print("Failed Subjects:")
-                    for subject, grade in failed_subjects.items():
-                        print(f" - {subject}: {grade}")
-
-                    print("-" * 30)
-
-            except Exception as e:
-                print(f"Error processing student #{i}: {e}")
-
-        # If no failed students were found
-        if not found:
-            print("No students with failed subjects.\n")
-
-    except Exception as e:
-        print(f"Unexpected error: {e}")
+    if not found:
+        print("No failed students.\n")
