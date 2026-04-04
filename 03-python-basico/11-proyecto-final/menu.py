@@ -1,8 +1,7 @@
-from main import students 
 import actions
 import data
 
-def display_menu():
+def display_menu(students):
     while True:
         print("""
    _____ _             _            _   
