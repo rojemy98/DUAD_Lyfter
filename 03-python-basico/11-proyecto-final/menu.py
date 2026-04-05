@@ -35,7 +35,7 @@ def display_menu(students):
         option = input("\nChoose an option: ")
 
         if option == "1":
-            actions.insert_student(students)
+            actions.insert_students(students)
 
         elif option == "2":
             actions.get_all_students(students)
