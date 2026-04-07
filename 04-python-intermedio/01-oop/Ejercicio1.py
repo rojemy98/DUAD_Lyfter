@@ -83,12 +83,6 @@ class Head:
         self.mouth = 1
 
 
-class Torso:
-    def __init__(self):
-        self.heart = 1
-        self.lungs = 2
-
-
 class Hand:
     def __init__(self):
         self.fingers = 5
@@ -106,17 +100,22 @@ class Feet:
 
 class Leg:
     def __init__(self):
-        self.feet = Feet() 
+        self.feet = Feet()
 
 
-class Human:
+class Torso:
     def __init__(self):
-
-        self.head = Head()
-        self.torso = Torso()
+        self.heart = 1
+        self.lungs = 2
 
         self.left_arm = Arm()
         self.right_arm = Arm()
 
         self.left_leg = Leg()
         self.right_leg = Leg()
+
+
+class Human:
+    def __init__(self):
+        self.head = Head()
+        self.torso = Torso()
