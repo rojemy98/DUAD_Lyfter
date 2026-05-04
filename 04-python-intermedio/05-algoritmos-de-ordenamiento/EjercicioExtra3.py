@@ -23,15 +23,14 @@ def bubble_sort(list):
 
 def validated_bubble_sort(list):
 
-    #Valida que no esté vacía
-    if len(list) == 0:
-        print("Error: The list is empty")
-        return
+    def validate_list(lst):
+        # Valida que no esté vacía
+        if len(lst) == 0:
+            raise ValueError("Error: The list is empty")
 
-    #Valida que todos los elementos sean números
-    for item in list:
-        if not isinstance(item, (int, float)):
-            print("Error: The list contains no numeric elements")
-            return
+        # Valida que todos los elementos sean números
+        for item in lst:
+            if not isinstance(item, (int, float)):
+                raise TypeError("Error: The list contains non-numeric elements")
 
     bubble_sort(list)
