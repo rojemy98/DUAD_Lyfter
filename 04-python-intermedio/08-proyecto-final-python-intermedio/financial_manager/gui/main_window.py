@@ -1,14 +1,29 @@
 import FreeSimpleGUI as sg
+
 from gui.add_category_window import (
     open_add_category_window
 )
+
 from gui.add_expense_window import (
     open_add_expense_window
 )
+
 from gui.add_income_window import (
     open_add_income_window
 )
+
 from models.finance_manager import FinanceManager
+
+from services.filters import (
+    filter_transactions_by_date
+)
+from services.validations import (
+    validate_date
+)
+
+from services.csv_exporter import (
+    export_transactions_report
+)
 
 
 # Set application theme
@@ -155,6 +170,32 @@ def run_main_window():
         ],
 
         [
+            sg.Text("Start Date"),
+
+            sg.Input(
+                key="-START_DATE-",
+                size=(15, 1)
+            ),
+
+            sg.Text("End Date"),
+
+            sg.Input(
+                key="-END_DATE-",
+                size=(15, 1)
+            ),
+
+            sg.Button(
+                "Filter",
+                size=(12, 1)
+            ),
+
+            sg.Button(
+                "Clear Filters",
+                size=(12, 1)
+            )
+        ],
+
+        [
             sg.HorizontalSeparator()
         ],
 
@@ -207,6 +248,12 @@ def run_main_window():
                 "New Category",
                 size=(15, 1),
                 button_color=("white", "#1e90ff")
+            ),
+
+            sg.Button(
+                "Export CSV",
+                size=(15, 1),
+                button_color=("white", "#8b008b")
             ),
 
             sg.Button(
@@ -301,6 +348,89 @@ def run_main_window():
         if event == "New Category":
 
             open_add_category_window(finance_manager)
+
+        # Filter transactions event
+        if event == "Filter":
+
+            try:
+
+                # Validate dates
+                start_date = validate_date(
+                    values["-START_DATE-"]
+                )
+
+                end_date = validate_date(
+                    values["-END_DATE-"]
+                )
+
+                # Filter transactions
+                filtered_transactions = (
+                    filter_transactions_by_date(
+                        finance_manager.transactions,
+                        start_date,
+                        end_date
+                    )
+                )
+
+                # Build filtered tables
+                expenses_data = build_table_data(
+                    filtered_transactions,
+                    "Expense"
+                )
+
+                incomes_data = build_table_data(
+                    filtered_transactions,
+                    "Income"
+                )
+
+                # Update tables
+                window["-EXPENSES_TABLE-"].update(
+                    values=expenses_data
+                )
+
+                window["-INCOMES_TABLE-"].update(
+                    values=incomes_data
+                )
+
+            except ValueError as error:
+
+                sg.popup_error(error)
+
+        # Clear filters event
+        if event == "Clear Filters":
+
+            refresh_dashboard(
+                window,
+                finance_manager
+            )
+
+        # Export CSV event
+        if event == "Export CSV":
+
+            file_path = sg.popup_get_file(
+
+                "Save CSV Report",
+
+                save_as=True,
+
+                default_extension=".csv",
+
+                file_types=(
+                    ("CSV Files", "*.csv"),
+                )
+            )
+
+            # Check if user selected path
+            if file_path:
+
+                export_transactions_report(
+                    finance_manager.transactions,
+                    file_path
+                )
+
+                sg.popup(
+                    "CSV report exported successfully"
+                )
 
     # Close window
     window.close()
