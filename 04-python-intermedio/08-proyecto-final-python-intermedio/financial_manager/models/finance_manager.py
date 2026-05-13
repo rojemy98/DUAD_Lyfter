@@ -5,41 +5,48 @@ from services.persistence import (
     load_transactions
 )
 
+
 class FinanceManager:
 
+    # Initialize the finance manager and load persisted data
     def __init__(self):
 
-        # Load saved categories
+        # Load saved categories from CSV
         self.categories = load_categories()
 
-        # Load saved transactions
+        # Load saved transactions from CSV
         self.transactions = load_transactions()
 
 
+    # Add a new category and persist the updated list
     def add_category(self, category):
 
-        # Add category into memory
+        # Store category in memory
         self.categories.append(category)
 
-        # Save updated categories
+        # Persist categories to CSV
         save_categories(self.categories)
 
 
+    # Add a new transaction and persist the updated list
     def add_transaction(self, transaction):
 
-        # Add transaction into memory
+        # Store transaction in memory
         self.transactions.append(transaction)
 
-        # Save updated transactions
+        # Persist transactions to CSV
         save_transactions(self.transactions)
 
 
+    # Calculate total income from all transactions
     def get_total_income(self):
 
         total_income = 0
 
+        # Iterate through all transactions
         for transaction in self.transactions:
 
+            # Only consider income transactions
             if transaction.transaction_type == "Income":
 
                 total_income += transaction.amount
@@ -47,12 +54,15 @@ class FinanceManager:
         return total_income
 
 
+    # Calculate total expenses from all transactions
     def get_total_expenses(self):
 
         total_expenses = 0
 
+        # Iterate through all transactions
         for transaction in self.transactions:
 
+            # Only consider expense transactions
             if transaction.transaction_type == "Expense":
 
                 total_expenses += transaction.amount
@@ -60,6 +70,7 @@ class FinanceManager:
         return total_expenses
 
 
+    # Calculate net balance (income - expenses)
     def get_balance(self):
 
         return self.get_total_income() - self.get_total_expenses()
