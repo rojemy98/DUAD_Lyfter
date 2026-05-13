@@ -8,7 +8,6 @@ from gui.add_expense_window import (
 from gui.add_income_window import (
     open_add_income_window
 )
-
 from models.finance_manager import FinanceManager
 
 
@@ -40,6 +39,45 @@ def build_table_data(transactions, transaction_type):
             ])
 
     return table_data
+
+
+# Refresh all window data
+def refresh_dashboard(window, finance_manager):
+
+    # Build updated expenses data
+    expenses_data = build_table_data(
+        finance_manager.transactions,
+        "Expense"
+    )
+
+    # Build updated incomes data
+    incomes_data = build_table_data(
+        finance_manager.transactions,
+        "Income"
+    )
+
+    # Update expenses table
+    window["-EXPENSES_TABLE-"].update(
+        values=expenses_data
+    )
+
+    # Update incomes table
+    window["-INCOMES_TABLE-"].update(
+        values=incomes_data
+    )
+
+    # Update totals
+    window["-INCOME_TEXT-"].update(
+        f"Income: {finance_manager.get_total_income()}"
+    )
+
+    window["-EXPENSE_TEXT-"].update(
+        f"Expenses: {finance_manager.get_total_expenses()}"
+    )
+
+    window["-BALANCE_TEXT-"].update(
+        f"Balance: {finance_manager.get_balance()}"
+    )
 
 
 # Create main window
@@ -123,7 +161,8 @@ def run_main_window():
         [
             sg.Text(
                 f"Income: {finance_manager.get_total_income()}",
-                font=("Arial Bold", 12)
+                font=("Arial Bold", 12),
+                key="-INCOME_TEXT-"
             ),
 
             sg.Text(
@@ -132,7 +171,8 @@ def run_main_window():
 
             sg.Text(
                 f"Expenses: {finance_manager.get_total_expenses()}",
-                font=("Arial Bold", 12)
+                font=("Arial Bold", 12),
+                key="-EXPENSE_TEXT-"
             ),
 
             sg.Text(
@@ -141,7 +181,8 @@ def run_main_window():
 
             sg.Text(
                 f"Balance: {finance_manager.get_balance()}",
-                font=("Arial Bold", 12)
+                font=("Arial Bold", 12),
+                key="-BALANCE_TEXT-"
             )
         ],
 
@@ -233,12 +274,28 @@ def run_main_window():
         # Add expense event
         if event == "Add Expense":
 
-            open_add_expense_window(finance_manager)
+            open_add_expense_window(
+                finance_manager
+            )
+
+            # Refresh dashboard after adding expense
+            refresh_dashboard(
+                window,
+                finance_manager
+            )
 
         # Add income event
         if event == "Add Income":
 
-            open_add_income_window(finance_manager)
+            open_add_income_window(
+                finance_manager
+            )
+
+            # Refresh dashboard after adding income
+            refresh_dashboard(
+                window,
+                finance_manager
+            )
 
         # New category event
         if event == "New Category":
