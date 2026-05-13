@@ -22,23 +22,6 @@ CSV (file-based persistence)
 Pytest (unit testing)
 OOP (Object-Oriented Programming)
 
-⚙️ Installation
-
-1. Clone the repository
-git clone https://github.com/your-username/personal-finance-manager.git
-cd personal-finance-manager
-
-2. Install dependencies
-
-pip install FreeSimpleGUI pytest
-
-▶️ Run the application
-python main.py
-
-🧪 Run Tests
-pytest
-
-
 📌 Core Functionalities
 
 💰 Transactions
