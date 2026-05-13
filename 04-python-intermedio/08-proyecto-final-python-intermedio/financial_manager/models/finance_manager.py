@@ -1,19 +1,37 @@
+from services.persistence import (
+    save_categories,
+    save_transactions,
+    load_categories,
+    load_transactions
+)
+
 class FinanceManager:
 
     def __init__(self):
 
-        self.categories = []
-        self.transactions = []
+        # Load saved categories
+        self.categories = load_categories()
+
+        # Load saved transactions
+        self.transactions = load_transactions()
 
 
     def add_category(self, category):
 
+        # Add category into memory
         self.categories.append(category)
+
+        # Save updated categories
+        save_categories(self.categories)
 
 
     def add_transaction(self, transaction):
 
+        # Add transaction into memory
         self.transactions.append(transaction)
+
+        # Save updated transactions
+        save_transactions(self.transactions)
 
 
     def get_total_income(self):
