@@ -2,9 +2,9 @@
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name VARCHAR(25) NOT NULL,
-  last_name VARCHAR(25) NOT NULL,
-  email VARCHAR(25) NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
   registration_date TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -15,10 +15,10 @@ CREATE TABLE shopping_cart (
 
 CREATE TABLE products (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name VARCHAR(25) NOT NULL,
-  brand VARCHAR(25) NOT NULL,
+  name TEXT NOT NULL,
+  brand TEXT NOT NULL,
   price REAL NOT NULL,
-  stock_available INT NOT NULL,
+  stock_available INTEGER NOT NULL,
   entry_date TEXT DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -33,14 +33,14 @@ CREATE TABLE reviews (
 
 CREATE TABLE payment_methods (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  method_type VARCHAR(25) NOT NULL,
-  bank_name VARCHAR(25) NOT NULL,
+  method_type TEXT NOT NULL,
+  bank_name TEXT NOT NULL,
   id_owner INTEGER NOT NULL REFERENCES users(id)
 );
 
 CREATE TABLE invoices (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  invoice_number INTEGER NOT NULL,
+  invoice_number TEXT NOT NULL,
   purchase_date TEXT DEFAULT CURRENT_TIMESTAMP,
   total_amount REAL NOT NULL,
   id_buyer INTEGER NOT NULL REFERENCES users(id),
@@ -103,4 +103,4 @@ ORDER BY total_amount DESC;
 -- Obtenga una sola factura por número de factura.
 SELECT *
 FROM invoices
-WHERE invoice_number = 1001;
+WHERE invoice_number = 'FAC-1001';
