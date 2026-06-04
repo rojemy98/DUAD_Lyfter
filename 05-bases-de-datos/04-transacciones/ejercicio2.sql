@@ -1,84 +1,109 @@
+-- Temporary table to simulate a shopping cart
+CREATE TEMP TABLE temp_purchase_items (
+    product_id INTEGER,
+    quantity INTEGER
+);
+
+-- Sample products to purchase
+INSERT INTO temp_purchase_items VALUES
+(1, 2),
+(2, 1),
+(3, 4);
+
 DO $$
 DECLARE
-    v_user_id INTEGER := 1;  -- purchasing user
-    v_bill_id INTEGER;
-    
-    -- Product 1
-    v_product1_id INTEGER := 1;
-    v_qty1 INTEGER := 2;
-    v_stock1 INTEGER;
+    v_user_id INTEGER := 1;      -- Purchasing user
+    v_bill_id INTEGER;           -- Generated invoice ID
 
-    -- Product 2
-    v_product2_id INTEGER := 2;
-    v_qty2 INTEGER := 1;
-    v_stock2 INTEGER;
+    rec RECORD;                  -- Variable used to iterate through products
+    v_stock INTEGER;             -- Available stock for each product
 
 BEGIN
-    -- 1. Verify that the user exists
-    IF NOT EXISTS (SELECT 1 FROM users WHERE id = v_user_id) THEN
-        RAISE EXCEPTION 'User does not exist';
+
+
+    -- Verify that the user exists
+    IF NOT EXISTS (
+        SELECT 1
+        FROM users
+        WHERE id = v_user_id
+    ) THEN
+        RAISE EXCEPTION 'User % does not exist', v_user_id;
     END IF;
 
-    -- 2. Validate stock for product 1
-    SELECT stock INTO v_stock1
-    FROM products
-    WHERE id = v_product1_id;
+    -- Validate stock for all requested products
+    FOR rec IN
+        SELECT product_id, quantity
+        FROM temp_purchase_items
+    LOOP
 
-    IF v_stock1 IS NULL OR v_stock1 < v_qty1 THEN
-        RAISE EXCEPTION 'Insufficient stock for product %', v_product1_id;
-    END IF;
+        SELECT stock
+        INTO v_stock
+        FROM products
+        WHERE id = rec.product_id;
 
-    -- 3. Validate stock for product 2
-    SELECT stock INTO v_stock2
-    FROM products
-    WHERE id = v_product2_id;
+        -- Verify that the product exists
+        IF v_stock IS NULL THEN
+            RAISE EXCEPTION
+                'Product % does not exist',
+                rec.product_id;
+        END IF;
 
-    IF v_stock2 IS NULL OR v_stock2 < v_qty2 THEN
-        RAISE EXCEPTION 'Insufficient stock for product %', v_product2_id;
-    END IF;
+        -- Verify sufficient stock
+        IF v_stock < rec.quantity THEN
+            RAISE EXCEPTION
+                'Insufficient stock for product %. Available: %, Requested: %',
+                rec.product_id,
+                v_stock,
+                rec.quantity;
+        END IF;
 
-    -- 4. Create invoice
-    INSERT INTO bills (user_id, bill_date)
-    VALUES (v_user_id, NOW())
+    END LOOP;
+
+    -- Create the invoice
+    INSERT INTO bills (
+        user_id,
+        bill_date
+    )
+    VALUES (
+        v_user_id,
+        NOW()
+    )
     RETURNING id INTO v_bill_id;
 
-    -- 5. Insert invoice detail for product 1
-    INSERT INTO bill_details (
-        bill_id, product_id, quantity, unit_price, subtotal
-    )
-    SELECT
-        v_bill_id,
-        id,
-        v_qty1,
-        price,
-        price * v_qty1
-    FROM products
-    WHERE id = v_product1_id;
+    -- Insert invoice details and reduce stock
+    FOR rec IN
+        SELECT product_id, quantity
+        FROM temp_purchase_items
+    LOOP
 
-    -- 6. Reduce stock for product 1
-    UPDATE products
-    SET stock = stock - v_qty1
-    WHERE id = v_product1_id;
+        -- Insert invoice detail
+        INSERT INTO bill_details (
+            bill_id,
+            product_id,
+            quantity,
+            unit_price,
+            subtotal
+        )
+        SELECT
+            v_bill_id,
+            p.id,
+            rec.quantity,
+            p.price,
+            p.price * rec.quantity
+        FROM products p
+        WHERE p.id = rec.product_id;
 
-    -- 7. Insert invoice detail for product 2
-    INSERT INTO bill_details (
-        bill_id, product_id, quantity, unit_price, subtotal
-    )
-    SELECT
-        v_bill_id,
-        id,
-        v_qty2,
-        price,
-        price * v_qty2
-    FROM products
-    WHERE id = v_product2_id;
+        -- Update product stock
+        UPDATE products
+        SET stock = stock - rec.quantity
+        WHERE id = rec.product_id;
 
-    -- 8. Reduce stock for product 2
-    UPDATE products
-    SET stock = stock - v_qty2
-    WHERE id = v_product2_id;
+    END LOOP;
 
-    RAISE NOTICE 'Purchase completed successfully. Invoice ID: %', v_bill_id;
+    -- Display success message
+    RAISE NOTICE
+        'Purchase completed successfully. Invoice ID: %',
+        v_bill_id;
 
 END;
 $$ LANGUAGE plpgsql;
