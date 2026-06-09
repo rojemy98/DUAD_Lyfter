@@ -1,0 +1,38 @@
+[
+    {
+        "Id": 1,
+        "Title": "Learn Flask",
+        "Description": "Task created to learn Flask in 2 weeks",
+        "Status": "Todo"
+    },
+    {
+        "Id": 2,
+        "Title": "Updated title",
+        "Description": "Updated description",
+        "Status": "Completed"
+    },
+    {
+        "Id": 3,
+        "Title": "Build a REST API",
+        "Description": "Create a Flask REST API with CRUD operations",
+        "Status": "Todo"
+    },
+    {
+        "Id": 4,
+        "Title": "Write Unit Tests",
+        "Description": "Add unit tests for API endpoints using pytest",
+        "Status": "Completed"
+    },
+    {
+        "Id": 5,
+        "Title": "Deploy Application",
+        "Description": "Deploy the application to a cloud platform",
+        "Status": "Completed"
+    },
+    {
+        "Id": 6,
+        "Title": "Learn Flask Routes",
+        "Description": "Practice POST requests in Flask",
+        "Status": "Todo"
+    }
+]
