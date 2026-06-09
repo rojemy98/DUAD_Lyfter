@@ -8,23 +8,20 @@ app = Flask(__name__)
 @app.route("/tasks")
 def return_all_tasks():
 
-    # Read optional status query parameter
     status = request.args.get("status")
 
-    # Open the JSON file in read mode
     with open("tasks_list.json", "r") as file:
         tasks = json.load(file)
 
-    # Filter tasks by status if provided
-    filtered_tasks = []
+    if status:
+        filtered_tasks = []
 
-    for task in tasks:
-        if task["Status"] == status:
-            filtered_tasks.append(task)
+        for task in tasks:
+            if task["Status"] == status:
+                filtered_tasks.append(task)
 
-    tasks = filtered_tasks
+        return jsonify(filtered_tasks)
 
-    # Return all tasks as a JSON response
     return jsonify(tasks)
 
 
