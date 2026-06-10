@@ -1,36 +1,39 @@
 DO $$
 DECLARE
-    v_bill_id INTEGER := 1;
-    v_status VARCHAR(20);
-    v_exists BOOLEAN;
-    rec RECORD;
+    v_bill_id INTEGER := 1;      -- Invoice to be returned
+    v_status VARCHAR(20);        -- Current invoice status
+
+    rec RECORD;                  -- Variable used to iterate through invoice items
+
 BEGIN
 
-    -- Verify invoice exists
-    SELECT EXISTS (
-        SELECT 1
-        FROM bills
-        WHERE id = v_bill_id
-    )
-    INTO v_exists;
-
-    IF NOT v_exists THEN
-        RAISE EXCEPTION 'Invoice % does not exist', v_bill_id;
-    END IF;
-
-    -- Verify invoice has not already been returned
+    -- Retrieve invoice status
     SELECT status
     INTO v_status
     FROM bills
     WHERE id = v_bill_id;
 
-    IF v_status = 'Returned' THEN
-        RAISE EXCEPTION 'Invoice % has already been returned', v_bill_id;
+    -- Verify that the invoice exists
+    IF v_status IS NULL THEN
+        RAISE EXCEPTION
+            'Invoice % does not exist',
+            v_bill_id;
     END IF;
 
-    -- Restore stock for all products in the invoice
+    -- Verify that the invoice has not already
+    -- been returned
+    IF v_status = 'Returned' THEN
+        RAISE EXCEPTION
+            'Invoice % has already been returned',
+            v_bill_id;
+    END IF;
+
+    -- Restore stock for each product included
+    -- in the invoice
     FOR rec IN
-        SELECT product_id, quantity
+        SELECT
+            product_id,
+            quantity
         FROM bill_details
         WHERE bill_id = v_bill_id
     LOOP
@@ -41,12 +44,15 @@ BEGIN
 
     END LOOP;
 
-    -- Mark invoice as returned
+    -- Update invoice status
     UPDATE bills
     SET status = 'Returned'
     WHERE id = v_bill_id;
 
-    RAISE NOTICE 'Return processed successfully for invoice %', v_bill_id;
+    -- Display success message
+    RAISE NOTICE
+        'Return processed successfully for invoice %',
+        v_bill_id;
 
 END;
 $$ LANGUAGE plpgsql;

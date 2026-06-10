@@ -28,8 +28,8 @@ CREATE TABLE bill_details (
     product_id INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     unit_price NUMERIC(10,2),
+    subtotal NUMERIC(10,2);
     delivered BOOLEAN DEFAULT FALSE,
 
     FOREIGN KEY (bill_id) REFERENCES bills(id),
     FOREIGN KEY (product_id) REFERENCES products(id)
-);
