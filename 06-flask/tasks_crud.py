@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import json
+from utils import load_json_file_to_python, save_python_to_json_file, validate_allowed_status_in_request
 
 app = Flask(__name__)
 
@@ -10,8 +10,7 @@ def return_all_tasks():
 
     status = request.args.get("status")
 
-    with open("tasks_list.json", "r") as file:
-        tasks = json.load(file)
+    tasks = load_json_file_to_python("tasks_list.json")
 
     if status:
         filtered_tasks = []
@@ -47,20 +46,11 @@ def insert_task():
         if new_task[field] is None or str(new_task[field]).strip() == "":
             return jsonify({"message": f"Field '{field}' cannot be empty"}), 400
 
-
     # Validate allowed status values
-    valid_status = ["Todo", "In Progress", "Completed"]
-
-    if new_task["Status"] not in valid_status:
-        return jsonify({
-            "message": "Invalid status value",
-            "valid_status": valid_status
-        }), 400
-
+    validate_allowed_status_in_request(new_task)
 
     # Load existing tasks
-    with open("tasks_list.json", "r") as file:
-        tasks = json.load(file)
+    tasks = load_json_file_to_python("tasks_list.json")
 
     # Check duplicate ID
     for task in tasks:
@@ -71,8 +61,7 @@ def insert_task():
     tasks.append(new_task)
 
     # Save file
-    with open("tasks_list.json", "w") as file:
-        json.dump(tasks, file, indent=4)
+    save_python_to_json_file(tasks, "tasks_list.json")
 
     return jsonify({
         "message": "Task added successfully",
@@ -87,9 +76,11 @@ def edit_task(task_id):
     # Read JSON data sent in the request body
     updated_data = request.get_json()
 
+    # Validate allowed status values
+    validate_allowed_status_in_request(updated_data)
+
     # Load existing tasks from the JSON file
-    with open("tasks_list.json", "r") as file:
-        tasks = json.load(file)
+    tasks = load_json_file_to_python("tasks_list.json")
 
     # Search for the task by ID and update its fields
     for task in tasks:
@@ -106,8 +97,7 @@ def edit_task(task_id):
         return jsonify({"message": "Task not found"}), 404
 
     # Save updated tasks list back to the JSON file
-    with open("tasks_list.json", "w") as file:
-        json.dump(tasks, file, indent=4)
+    save_python_to_json_file(tasks, "tasks_list.json")
 
     # Return success response
     return jsonify({
@@ -121,8 +111,7 @@ def edit_task(task_id):
 def delete_task(task_id):
 
     # Load existing tasks from the JSON file
-    with open("tasks_list.json", "r") as file:
-        tasks = json.load(file)
+    tasks = load_json_file_to_python("tasks_list.json")
 
     # Search for the task to delete
     for task in tasks:
@@ -134,8 +123,7 @@ def delete_task(task_id):
         return jsonify({"message": "Task not found"}), 404
 
     # Save updated list after deletion
-    with open("tasks_list.json", "w") as file:
-        json.dump(tasks, file, indent=4)
+    save_python_to_json_file(tasks, "tasks_list.json")
 
     # Return success response
     return jsonify({
