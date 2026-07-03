@@ -94,6 +94,48 @@ class UserRepository:
 
             return None
         
+    def bulk_create_users(self, users):
+        """
+        Insert multiple users into the database.
+
+        Args:
+            users (list): List of user tuples.
+
+        Returns:
+            bool
+        """
+
+        try:
+
+            query = """
+                INSERT INTO lyfter_car_rental.users
+                (
+                    name,
+                    last_name,
+                    username,
+                    email,
+                    password,
+                    birthdate,
+                    status
+                )
+                VALUES %s;
+            """
+
+            self.db_manager.begin_transaction()
+
+            self.db_manager.execute_many(
+                query,
+                users
+            )
+
+            self.db_manager.commit()
+
+            return True
+
+        except Exception:
+
+            return rollback(self.db_manager)
+        
     def update_user_status(self, user_id, user_status):
 
         try:
@@ -103,7 +145,7 @@ class UserRepository:
             user = self.db_manager.execute_query(
                 """
                 SELECT id
-                FROM lyfter_car_rental.cars
+                FROM lyfter_car_rental.users
                 WHERE id = %s;
                 """,
                 user_id
@@ -142,53 +184,20 @@ class UserRepository:
 
             return None
         
-    def suspend_user(self, user_id, user_status):
+    def get_active_user_ids(self):
+        """
+        Return the IDs of all active users.
+        """
 
-        try:
+        results = self.db_manager.execute_query(
+            """
+            SELECT id
+            FROM lyfter_car_rental.users
+            WHERE status = 'Active';
+            """
+        )
 
-            self.db_manager.begin_transaction()
-
-            user = self.db_manager.execute_query(
-                """
-                SELECT id
-                FROM lyfter_car_rental.cars
-                WHERE id = %s;
-                """,
-                user_id
-            )
-
-            if not user:
-                raise Exception("User not found")
-
-            updated_user = self.db_manager.execute_query(
-                """
-                UPDATE lyfter_car_rental.users
-                SET status = %s
-                WHERE id = %s
-                RETURNING
-                    id,
-                    name,
-                    last_name,
-                    username,
-                    email,
-                    birthdate,
-                    status;
-                """,
-                user_status,
-                user_id
-            )
-
-            self.db_manager.commit()
-
-            return self._format_user(updated_user[0])
-
-        except Exception:
-
-            self.db_manager.rollback()
-
-            traceback.print_exc()
-
-            return None
+        return [row[0] for row in results]
 
 
 class CarRepository:
@@ -237,12 +246,27 @@ class CarRepository:
 
             return format_results(
                 results,
-                self._format_car
+                self._format_cars
             )
 
         except Exception:
 
             return rollback(self.db_manager)
+        
+    def get_available_car_ids(self):
+        """
+        Return the IDs of all available cars.
+        """
+
+        results = self.db_manager.execute_query(
+            """
+            SELECT id
+            FROM lyfter_car_rental.cars
+            WHERE status = 'Available';
+            """
+        )
+
+        return [row[0] for row in results]
         
     def create_car(self, car_data):
 
@@ -272,6 +296,45 @@ class CarRepository:
             traceback.print_exc()
 
             return None
+        
+    def bulk_create_cars(self, cars):
+        """
+        Insert multiple cars into the database.
+
+        Args:
+            cars (list): List of car tuples.
+
+        Returns:
+            bool
+        """
+
+        try:
+
+            query = """
+                INSERT INTO lyfter_car_rental.cars
+                (
+                    brand,
+                    model,
+                    manufacturing_year,
+                    status
+                )
+                VALUES %s;
+            """
+
+            self.db_manager.begin_transaction()
+
+            self.db_manager.execute_many(
+                query,
+                cars
+            )
+
+            self.db_manager.commit()
+
+            return True
+
+        except Exception:
+
+            return rollback(self.db_manager)
         
     def update_car_status(self, car_id, car_status):
 
@@ -366,7 +429,7 @@ class RentalRepository:
 
             return format_results(
                 results,
-                self._format_rental
+                self._format_rentals
             )
 
         except Exception:

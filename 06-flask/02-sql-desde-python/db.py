@@ -1,5 +1,5 @@
 import psycopg2
-
+from psycopg2.extras import execute_values
 
 class PgManager:
     def __init__(self, db_name, user, password, host, port=5432):
@@ -36,11 +36,21 @@ class PgManager:
         print("Connection closed")
 
     def execute_query(self, query, *args):
-        self.cursor.execute(query, args)
+        if args:
+            self.cursor.execute(query, args)
+        else:
+            self.cursor.execute(query)
 
         if self.cursor.description:
             return self.cursor.fetchall()
     
+    def execute_many(self, query, values):
+        execute_values(
+            self.cursor,
+            query,
+            values
+        )
+
     def begin_transaction(self):
         self.connection.autocommit = False
 
