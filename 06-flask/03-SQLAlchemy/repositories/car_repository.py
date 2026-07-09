@@ -1,5 +1,6 @@
 from base_repository import BaseRepository
 from models import Car, User
+from sqlalchemy import select
 
 class AdressRepository(BaseRepository):
 
@@ -17,6 +18,14 @@ class AdressRepository(BaseRepository):
         "year",
         "user_id"
     }
+
+    def get_all_cars(self) -> list[Car]:
+
+        statement = select(Car)
+
+        result = self.session.execute(statement)
+
+        return result.scalars().all()
 
     def create_car(self, data):
 
@@ -89,3 +98,33 @@ class AdressRepository(BaseRepository):
         except Exception:
             self.session.rollback()
             raise
+
+    def get_cars_with_no_users_associated(self) -> list[Car]:
+            try:
+
+                statement = select(Car).where(
+                    Car.user_id.is_(None)
+                )
+
+                result = self.session.execute(statement)
+
+                return result.scalars().all()
+
+            except Exception:
+                self.session.rollback()
+                raise
+
+    def get_cars_with_users_associated(self) -> list[Car]:
+            try:
+
+                statement = select(Car).where(
+                    Car.user_id.is_not(None)
+                )
+
+                result = self.session.execute(statement)
+
+                return result.scalars().all()
+
+            except Exception:
+                self.session.rollback()
+                raise

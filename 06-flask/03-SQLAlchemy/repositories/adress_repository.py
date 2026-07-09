@@ -1,5 +1,6 @@
 from base_repository import BaseRepository
 from models import Address
+from sqlalchemy import select
 
 class AdressRepository(BaseRepository):
 
@@ -18,6 +19,14 @@ class AdressRepository(BaseRepository):
         "country",
         "user_id"
     }
+
+    def get_all_adresses(self) -> list[Address]:
+
+        statement = select(Address)
+
+        result = self.session.execute(statement)
+
+        return result.scalars().all()
 
     def create_adress(self, data):
 
@@ -61,3 +70,16 @@ class AdressRepository(BaseRepository):
         self.session.delete(adress)
 
         self._commit()
+
+    def get_addresses_by_street(self, text: str) -> list[Address]:
+
+        statement = (
+            select(Address)
+            .where(Address.street.ilike(f"%{text}%"))
+        )
+
+        result = self.session.execute(statement)
+
+        return result.scalars().all()
+    
+    

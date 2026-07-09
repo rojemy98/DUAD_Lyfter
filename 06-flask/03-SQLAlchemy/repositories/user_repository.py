@@ -16,10 +16,6 @@ class UserRepository(BaseRepository):
         "email"
     }
 
-    def get_user_by_id(self, user_id: int) -> User | None:
-        return self.session.get(User, user_id)
-
-
     def get_all_users(self) -> list[User]:
 
         statement = select(User)
@@ -70,3 +66,30 @@ class UserRepository(BaseRepository):
         self.session.delete(user)
 
         self._commit()
+
+    def print_user_information(self, user_id: int) -> None:
+
+        user = self.session.get(User, user_id)
+
+        if user is None:
+            raise ValueError(
+                f"User {user_id} not found."
+            )
+
+        print(f"User: {user.name}")
+
+        print("\nCars:")
+
+        for car in user.cars:
+            print(
+                f"{car.brand} {car.model} ({car.year})"
+            )
+
+        print("\nAddresses:")
+
+        for address in user.addresses:
+            print(
+                f"{address.street}, "
+                f"{address.city}, "
+                f"{address.country}"
+            )
