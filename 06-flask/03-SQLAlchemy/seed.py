@@ -1,6 +1,6 @@
 from faker import Faker
 from sqlalchemy.orm import Session
-from database import Database
+from database import DatabaseConnection
 from models import Base
 from models import User
 from models import Address
@@ -10,7 +10,7 @@ import random
 
 fake = Faker()
 
-db = Database(
+db = DatabaseConnection(
     user="postgres",
     password="...",
     host="localhost",

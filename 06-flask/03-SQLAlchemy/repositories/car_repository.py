@@ -2,7 +2,7 @@ from base_repository import BaseRepository
 from models import Car, User
 from sqlalchemy import select
 
-class AdressRepository(BaseRepository):
+class CarRepository(BaseRepository):
 
     model = Car
 
@@ -90,8 +90,8 @@ class AdressRepository(BaseRepository):
 
             car.user = user
 
-            self.session.commit()
-            self.session.refresh(car)
+            self._commit()
+            self._refresh(car)
 
             return car
 

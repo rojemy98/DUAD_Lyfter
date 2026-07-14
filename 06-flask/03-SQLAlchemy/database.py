@@ -17,6 +17,6 @@ class DatabaseConnection:
 
     def create_engine(self, echo: bool = False):
         return create_engine(
-            self.connection_string,
+            self.connection_string(),
             echo=echo
         )
