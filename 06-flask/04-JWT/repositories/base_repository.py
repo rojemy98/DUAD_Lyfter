@@ -35,7 +35,7 @@ class BaseRepository:
         entity = self.session.get(self.model, id)
 
         if entity is None:
-            raise ValueError(
+            raise LookupError(
                 f"{self.model.__name__} {id} not found."
             )
 

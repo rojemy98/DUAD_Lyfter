@@ -1,6 +1,6 @@
 from sqlalchemy import select
 from repositories.base_repository import BaseRepository
-from database.models import User
+from database.models import User, UserRole
 
 
 class UsersRepository(BaseRepository):
@@ -12,7 +12,6 @@ class UsersRepository(BaseRepository):
         "last_name",
         "email",
         "password",
-        "role"
     }
 
     ALLOWED_FIELDS = {
@@ -20,7 +19,6 @@ class UsersRepository(BaseRepository):
         "last_name",
         "email",
         "password",
-        "role",
         "registration_date"
     }
 
@@ -40,7 +38,10 @@ class UsersRepository(BaseRepository):
                 self.ALLOWED_FIELDS
             )
 
-            user = User(**data)
+            user = User(
+                **data,
+                role=UserRole.USER
+                )
 
             self.session.add(user)
 

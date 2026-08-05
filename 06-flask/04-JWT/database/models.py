@@ -62,6 +62,11 @@ class User(Base):
         cascade="all, delete-orphan"
     )
 
+    contacts = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -253,4 +258,50 @@ class InvoiceProduct(Base):
             "quantity": self.quantity,
             "unit_price": float(self.unit_price),
             "subtotal": float(self.subtotal)
+        }
+
+
+class Contact(Base):
+
+    __tablename__ = "contacts"
+
+    id = mapped_column(primary_key=True)
+
+    user_id = mapped_column(
+        ForeignKey("users.id"),
+        nullable=False
+    )
+
+    name = mapped_column(
+        String(100),
+        nullable=False
+    )
+
+    phone = mapped_column(
+        String(20),
+        nullable=False
+    )
+
+    email = mapped_column(
+        String(255),
+        nullable=False
+    )
+
+    created_at = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC)
+    )
+
+    user = relationship(
+        back_populates="contacts"
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "name": self.name,
+            "phone": self.phone,
+            "email": self.email,
+            "created_at": self.created_at.isoformat()
         }

@@ -12,21 +12,22 @@ with open(PRIVATE_KEY_PATH, "r") as f:
 with open(PUBLIC_KEY_PATH, "r") as f:
     PUBLIC_KEY = f.read()
 
+
 class JWT_Manager:
+
     def __init__(self, algorithm):
         self.algorithm = algorithm
 
     def encode(self, data):
-        try:
-            encoded = jwt.encode(data, PRIVATE_KEY, algorithm=self.algorithm)
-            return encoded
-        except:
-            return None
+        return jwt.encode(
+            data,
+            PRIVATE_KEY,
+            algorithm=self.algorithm
+        )
 
     def decode(self, token):
-        try:
-            decoded = jwt.decode(token, PUBLIC_KEY, algorithms=[self.algorithm])
-            return decoded
-        except Exception as e:
-            print(e)
-            return None
+        return jwt.decode(
+            token,
+            PUBLIC_KEY,
+            algorithms=[self.algorithm]
+        )

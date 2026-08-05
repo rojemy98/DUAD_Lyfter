@@ -1,5 +1,6 @@
 from functools import wraps
 from flask import request, jsonify, g
+import jwt
 
 
 def jwt_required(auth_service):
@@ -21,38 +22,25 @@ def jwt_required(auth_service):
                     "message": "Invalid token format."
                 }), 401
 
-            try:
+            token = token.replace("Bearer ", "")
 
-                token = token.replace("Bearer ", "")
+            try:
 
                 decoded = auth_service.decode(token)
 
                 g.user = decoded
 
-            except Exception:
+            except jwt.ExpiredSignatureError:
+
+                return jsonify({
+                    "message": "Token has expired."
+                }), 401
+
+            except jwt.InvalidTokenError:
 
                 return jsonify({
                     "message": "Invalid token."
                 }), 401
-
-            return func(*args, **kwargs)
-
-        return wrapper
-
-    return decorator
-
-def role_required(*roles):
-
-    def decorator(func):
-
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-
-            if g.user["role"] not in roles:
-
-                return jsonify({
-                    "message": "Unauthorized access."
-                }), 403
 
             return func(*args, **kwargs)
 

@@ -8,6 +8,7 @@ from repositories.users_repository import UsersRepository
 from repositories.products_repository import ProductsRepository
 from repositories.invoices_repository import InvoicesRepository
 from repositories.invoice_products_repository import InvoiceProductsRepository
+from repositories.contacts_repository import ContactsRepository
 
 # Services
 from services.purchase_service import PurchaseService
@@ -15,6 +16,8 @@ from services.purchase_service import PurchaseService
 # Authentication
 from authentication.auth_service import JWT_Manager
 from authentication.auth_decorators import jwt_required, role_required
+
+from database.models import UserRole
 
 
 # ======================================================
@@ -49,6 +52,7 @@ users_repo = UsersRepository(session)
 products_repo = ProductsRepository(session)
 invoices_repo = InvoicesRepository(session)
 invoice_products_repo = InvoiceProductsRepository(session)
+contact_repo = ContactsRepository(session)
 
 # Services
 purchase_service = PurchaseService(
@@ -104,6 +108,7 @@ def handle_exception(error):
 @app.route("/register", methods=['POST'])
 def register():
     data = request.get_json()
+    data["role"] = UserRole.USER
     user = users_repo.insert_user(data)
     token = auth_service.encode({
         "id": user.id,
@@ -114,14 +119,14 @@ def register():
 
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.get_json()  # data is empty
+    data = request.get_json()
     if(data.get('email') == None or data.get('password') == None):
-        return jsonify(status=400)
+        return jsonify(status=400), 400
     else:
         result = users_repo.get_user(data.get('email'), data.get('password'))
 
         if(result == None):
-            return jsonify(status=403)
+            return jsonify(status=401), 401
         else:
             token = auth_service.encode({
                 "id": result.id,
@@ -239,6 +244,45 @@ def get_all_invoices():
         [invoice.to_dict() for invoice in invoices]
         ), 200
 
+
+# ======================================================
+# Contacts endpoints
+# ======================================================
+
+
+@app.route("contacts", methods=["GET"])
+def get_user_contacts():
+
+    contacts = contact_repo.get_contacts_by_user(g.user["id"])
+
+    return jsonify(
+        [contact.to_dict() for contact in contacts]
+    ), 200
+
+
+@app.route("contacts", methods=["POST"])
+def create_contact():
+    pass
+
+
+@app.route("contacts/<contact_id>", methods=["PUT"])
+def update_contact(contact_id):
+    pass
+
+
+@app.route("contacts/<contact_id>", methods=["DELETE"])
+def delete_user_contact(contact_id):
+    pass
+
+
+@app.route("/admin/contacts", methods=["GET"])
+def get_all_contacts():
+    pass
+
+
+@app.route("contacts/<contact_id>", methods=["DELETE"])
+def delete_contact(contact_id):
+    pass
 
 # ======================================================
 # Application entry point
