@@ -99,3 +99,12 @@ class UsersRepository(BaseRepository):
 
         except Exception:
             raise
+        
+    def get_user_by_email(self, email: str):
+
+        statement = (
+            select(User)
+            .where(User.email == email)
+        )
+
+        return self.session.scalar(statement)

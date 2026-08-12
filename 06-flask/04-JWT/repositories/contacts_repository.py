@@ -1,7 +1,7 @@
 from sqlalchemy import select
-from sqlalchemy.orm import selectinload
-from repositories.base_repository import BaseRepository
 from database.models import Contact
+from repositories.base_repository import BaseRepository
+
 
 class ContactsRepository(BaseRepository):
 
@@ -16,48 +16,48 @@ class ContactsRepository(BaseRepository):
     ALLOWED_FIELDS = {
         "name",
         "phone",
-        "email",
-        "entry_date"
+        "email"
     }
 
+    def insert_contact(self, user_id: int, data: dict):
 
-    def insert_contact(self, data: dict):
+        self._validate_dict(data)
 
-        try:
+        self._validate_required_fields(
+            data,
+            self.REQUIRED_FIELDS
+        )
 
-            self._validate_dict(data)
-            self._validate_required_fields(data, self.REQUIRED_FIELDS)
-            self._validate_allowed_fields(data, self.ALLOWED_FIELDS)
+        self._validate_allowed_fields(
+            data,
+            self.ALLOWED_FIELDS
+        )
 
-            contact = Contact(**data)
+        contact = Contact(
+            user_id=user_id,
+            **data
+        )
 
-            self.session.add(contact)
-            self._commit()
-            self._refresh(contact)
+        self.session.add(contact)
 
-            return contact
-        
-        except Exception:
-            raise
+        self._commit()
+        self._refresh(contact)
+
+        return contact
 
     def get_contacts_by_user(self, user_id: int):
+
         statement = (
             select(Contact)
             .where(Contact.user_id == user_id)
-            .order_by(Contact.entry_date.desc())
+            .order_by(Contact.id)
         )
 
         return self.session.scalars(statement).all()
 
     def get_contact_by_id(self, contact_id: int):
 
-        try:
-
-            return self._get_by_id(contact_id)
-
-        except Exception:
-            raise
-
+        return self._get_by_id(contact_id)
 
     def update_contact(self, contact_id: int, data: dict):
 
@@ -74,7 +74,42 @@ class ContactsRepository(BaseRepository):
             setattr(contact, field, value)
 
         self._commit()
+        self._refresh(contact)
 
+        return contact
+
+    def update_contact_by_user(
+    self,
+    contact_id: int,
+    user_id: int,
+    data: dict
+    ):
+        self._validate_dict(data)
+
+        self._validate_allowed_fields(
+            data,
+            self.ALLOWED_FIELDS
+        )
+
+        statement = (
+            select(Contact)
+            .where(
+                Contact.id == contact_id,
+                Contact.user_id == user_id
+            )
+        )
+
+        contact = self.session.scalar(statement)
+
+        if contact is None:
+            raise LookupError(
+                f"Contact {contact_id} not found."
+            )
+
+        for field, value in data.items():
+            setattr(contact, field, value)
+
+        self._commit()
         self._refresh(contact)
 
         return contact
@@ -82,6 +117,31 @@ class ContactsRepository(BaseRepository):
     def delete_contact(self, contact_id: int):
 
         contact = self._get_by_id(contact_id)
+
+        self.session.delete(contact)
+
+        self._commit()
+
+        return {
+            "message": f"Contact '{contact.name}' deleted successfully."
+        }
+
+    def delete_contact_by_user(self, contact_id: int, user_id: int):
+
+        statement = (
+            select(Contact)
+            .where(
+                Contact.id == contact_id,
+                Contact.user_id == user_id
+            )
+        )
+
+        contact = self.session.scalar(statement)
+
+        if contact is None:
+            raise LookupError(
+                f"Contact {contact_id} not found."
+            )
 
         self.session.delete(contact)
 

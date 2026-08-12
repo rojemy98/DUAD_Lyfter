@@ -9,6 +9,7 @@ from repositories.products_repository import ProductsRepository
 from repositories.invoices_repository import InvoicesRepository
 from repositories.invoice_products_repository import InvoiceProductsRepository
 from repositories.contacts_repository import ContactsRepository
+from repositories.login_history_repository import LoginHistoryRepository
 
 # Services
 from services.purchase_service import PurchaseService
@@ -18,6 +19,10 @@ from authentication.auth_service import JWT_Manager
 from authentication.auth_decorators import jwt_required, role_required
 
 from database.models import UserRole
+
+from datetime import timedelta
+
+import jwt
 
 
 # ======================================================
@@ -53,6 +58,7 @@ products_repo = ProductsRepository(session)
 invoices_repo = InvoicesRepository(session)
 invoice_products_repo = InvoiceProductsRepository(session)
 contact_repo = ContactsRepository(session)
+login_history_repo = LoginHistoryRepository(session)
 
 # Services
 purchase_service = PurchaseService(
@@ -117,23 +123,148 @@ def register():
     return jsonify(token=token), 201
 
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
-    if(data.get('email') == None or data.get('password') == None):
-        return jsonify(status=400), 400
-    else:
-        result = users_repo.get_user(data.get('email'), data.get('password'))
 
-        if(result == None):
-            return jsonify(status=401), 401
-        else:
-            token = auth_service.encode({
-                "id": result.id,
-                "role": result.role
-            })
-            return jsonify(token=token), 200
-        
+    data = request.get_json()
+
+    if not data:
+        return jsonify({
+            "message": "Request body is required."
+        }), 400
+
+    email = data.get("email")
+    password = data.get("password")
+
+    if email is None or password is None:
+        return jsonify({
+            "message": "Email and password are required."
+        }), 400
+
+    user = users_repo.get_user_by_email(email)
+
+    ip_address = request.remote_addr or "127.0.0.1"
+
+    if user is None:
+
+        login_history_repo.insert_login_history(
+            user_id=None,
+            ip_address=ip_address,
+            success=False
+        )
+
+        return jsonify({
+            "message": "Invalid credentials."
+        }), 401
+    
+    result = users_repo.get_user(email, password)
+
+    if result is None:
+
+        login_history_repo.insert_login_history(
+            user_id=user.id,
+            ip_address=ip_address,
+            success=False
+        )
+
+        return jsonify({
+            "message": "Invalid credentials."
+        }), 401
+    
+    login_history_repo.insert_login_history(
+        user_id=user.id,
+        ip_address=ip_address,
+        success=True
+    )
+
+    access_token = auth_service.encode(
+        {
+            "id": user.id,
+            "role": user.role,
+            "type": "access"
+        },
+        expires_in=timedelta(minutes=15)
+    )
+
+    refresh_token = auth_service.encode(
+        {
+            "id": user.id,
+            "type": "refresh"
+        },
+        expires_in=timedelta(days=7)
+    )
+
+    return jsonify({
+        "access_token": access_token,
+        "refresh_token": refresh_token
+    }), 200
+
+
+@app.route("/refresh-token", methods=["POST"])
+def refresh_token():
+
+    data = request.get_json()
+
+    if not data or not data.get("refresh_token"):
+        return jsonify({
+            "message": "Refresh token is required."
+        }), 400
+
+    token = data["refresh_token"]
+
+    try:
+
+        decoded = auth_service.decode(token)
+
+        if decoded.get("type") != "refresh":
+            return jsonify({
+                "message": "Invalid refresh token."
+            }), 401
+
+        user = users_repo.get_user_by_id(
+            decoded["id"]
+        )
+
+        new_access_token = auth_service.encode(
+            {
+                "id": user.id,
+                "role": user.role,
+                "type": "access"
+            },
+            expires_in=timedelta(minutes=15)
+        )
+
+        return jsonify({
+            "access_token": new_access_token
+        }), 200
+
+    except jwt.ExpiredSignatureError:
+
+        return jsonify({
+            "message": "Refresh token has expired. Please login again."
+        }), 401
+
+    except jwt.InvalidTokenError:
+
+        return jsonify({
+            "message": "Invalid refresh token."
+        }), 401
+
+
+@app.route("/login-history", methods=["GET"])
+@jwt_required(auth_service)
+@role_required("ADMIN")
+def get_login_history():
+
+    history = login_history_repo.get_all_login_history()
+
+    return jsonify(
+        [
+            record.to_dict()
+            for record in history
+        ]
+    ), 200
+    
 
 @app.route('/me')
 @jwt_required(auth_service)
@@ -250,7 +381,8 @@ def get_all_invoices():
 # ======================================================
 
 
-@app.route("contacts", methods=["GET"])
+@app.route("/contacts", methods=["GET"])
+@jwt_required(auth_service)
 def get_user_contacts():
 
     contacts = contact_repo.get_contacts_by_user(g.user["id"])
@@ -260,29 +392,66 @@ def get_user_contacts():
     ), 200
 
 
-@app.route("contacts", methods=["POST"])
+@app.route("/contacts", methods=["POST"])
+@jwt_required(auth_service)
 def create_contact():
-    pass
+
+    data = request.get_json()
+
+    contact = contact_repo.insert_contact(
+        user_id=g.user["id"],
+        data=data
+    )
+
+    return jsonify(contact.to_dict()), 201
 
 
-@app.route("contacts/<contact_id>", methods=["PUT"])
+@app.route("/contacts/<contact_id>", methods=["PUT"])
+@jwt_required(auth_service)
 def update_contact(contact_id):
-    pass
+
+    data = request.get_json()
+
+    contact = contact_repo.update_contact_by_user(
+        contact_id=contact_id,
+        user_id=g.user["id"],
+        data=data
+    )
+
+    return jsonify(contact.to_dict()), 201
 
 
-@app.route("contacts/<contact_id>", methods=["DELETE"])
+@app.route("/contacts/<int:contact_id>", methods=["DELETE"])
+@jwt_required(auth_service)
 def delete_user_contact(contact_id):
-    pass
+
+    deleted_contact = contact_repo.delete_contact_by_user(
+        contact_id=contact_id,
+        user_id=g.user["id"]
+    )
+
+    return jsonify(deleted_contact), 200
 
 
 @app.route("/admin/contacts", methods=["GET"])
+@jwt_required(auth_service)
+@role_required("ADMIN")
 def get_all_contacts():
-    pass
+
+    contacts = contact_repo.get_all_contacts()
+
+    return jsonify(contacts), 200
 
 
-@app.route("contacts/<contact_id>", methods=["DELETE"])
+@app.route("/admin/contacts/<contact_id>", methods=["DELETE"])
+@jwt_required(auth_service)
+@role_required("ADMIN")
 def delete_contact(contact_id):
-    pass
+
+    deleted_contact = contact_repo.delete_contact(contact_id)
+
+    return jsonify(deleted_contact), 200
+
 
 # ======================================================
 # Application entry point

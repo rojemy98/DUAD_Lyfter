@@ -1,4 +1,4 @@
-from database import DatabaseConnection
+from database_connection import DatabaseConnection
 from models import Base
 
 db = DatabaseConnection(

@@ -7,6 +7,7 @@ from sqlalchemy import (
     String,
     Integer,
     DateTime,
+    Boolean,
     Date,
     ForeignKey,
     Numeric,
@@ -62,7 +63,11 @@ class User(Base):
         cascade="all, delete-orphan"
     )
 
-    contacts = relationship(
+    login_history: Mapped[list["LoginHistory"]] = relationship(
+        back_populates="user"
+    )
+
+    contacts: Mapped[list["Contact"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan"
     )
@@ -265,43 +270,88 @@ class Contact(Base):
 
     __tablename__ = "contacts"
 
-    id = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(
+        primary_key=True
+    )
 
-    user_id = mapped_column(
+    user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"),
         nullable=False
     )
 
-    name = mapped_column(
+    name: Mapped[str] = mapped_column(
         String(100),
         nullable=False
     )
 
-    phone = mapped_column(
+    phone: Mapped[str] = mapped_column(
         String(20),
         nullable=False
     )
 
-    email = mapped_column(
+    email: Mapped[str] = mapped_column(
         String(255),
         nullable=False
     )
 
-    created_at = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(UTC)
+        default=lambda: datetime.now(UTC),
+        nullable=False
     )
 
-    user = relationship(
+    user: Mapped["User"] = relationship(
         back_populates="contacts"
     )
 
     def to_dict(self):
         return {
             "id": self.id,
-            "user_id": self.user_id,
             "name": self.name,
             "phone": self.phone,
             "email": self.email,
             "created_at": self.created_at.isoformat()
+        }
+
+class LoginHistory(Base):
+
+    __tablename__ = "login_history"
+
+    id: Mapped[int] = mapped_column(
+        primary_key=True
+    )
+
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
+
+    login_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(UTC),
+        nullable=False
+    )
+
+    ip_address: Mapped[str] = mapped_column(
+        String(45),
+        nullable=False
+    )
+
+    success: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False
+    )
+
+    user: Mapped["User | None"] = relationship(
+        back_populates="login_history"
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "login_date": self.login_date.isoformat(),
+            "ip_address": self.ip_address,
+            "success": self.success
         }
