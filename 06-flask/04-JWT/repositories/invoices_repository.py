@@ -35,11 +35,15 @@ class InvoicesRepository(BaseRepository):
 
         return self.session.scalars(statement).all()
 
-    def get_all_invoices(self):
-    
-            statement = (
-                select(Invoice)
-                .order_by(Invoice.purchase_date.desc())
-            )
-    
-            return self.session.scalars(statement).all()
+def get_all_invoices(self):
+
+    statement = (
+        select(Invoice)
+        .options(
+            selectinload(Invoice.products)
+            .selectinload(InvoiceProduct.product)
+        )
+        .order_by(Invoice.id)
+    )
+
+    return self.session.scalars(statement).all()

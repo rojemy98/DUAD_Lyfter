@@ -111,16 +111,25 @@ def handle_exception(error):
 # ======================================================
 
 
-@app.route("/register", methods=['POST'])
+@app.route("/register", methods=["POST"])
 def register():
+
     data = request.get_json()
-    data["role"] = UserRole.USER
+
     user = users_repo.insert_user(data)
-    token = auth_service.encode({
-        "id": user.id,
-        "role": user.role
-    })
-    return jsonify(token=token), 201
+
+    token = auth_service.encode(
+        {
+            "id": user.id,
+            "role": user.role,
+            "type": "access"
+        },
+        expires_in=timedelta(minutes=15)
+    )
+
+    return jsonify({
+        "access_token": token
+    }), 201
 
 
 @app.route("/login", methods=["POST"])
@@ -418,7 +427,7 @@ def update_contact(contact_id):
         data=data
     )
 
-    return jsonify(contact.to_dict()), 201
+    return jsonify(contact.to_dict()), 200
 
 
 @app.route("/contacts/<int:contact_id>", methods=["DELETE"])
@@ -440,7 +449,9 @@ def get_all_contacts():
 
     contacts = contact_repo.get_all_contacts()
 
-    return jsonify(contacts), 200
+    return jsonify(
+        [contact.to_dict() for contact in contacts]
+    ), 200
 
 
 @app.route("/admin/contacts/<contact_id>", methods=["DELETE"])
