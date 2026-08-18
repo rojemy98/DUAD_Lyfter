@@ -1,0 +1,8 @@
+# RSA Keys
+authentication/keys/private.pem
+authentication/keys/public.pem
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
