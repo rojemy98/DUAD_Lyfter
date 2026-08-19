@@ -315,11 +315,21 @@ def me():
 @role_required("ADMIN")
 def get_products():
 
+    cached_data = cache_manager.get_data("products:All")
+
+    if cached_data is None:
+
         products = products_repo.get_products()
+
+        products_data = [product.to_dict() for product in products]
+
+        cache_manager.store_data("products:All", json.dumps(products_data), 600)
 
         return jsonify(
             [product.to_dict() for product in products]
         ), 200
+
+    return jsonify(json.loads(cached_data)), 200
 
 
 @app.route("/products/<int:product_id>", methods=["GET"])
@@ -335,7 +345,7 @@ def get_product_by_id(product_id):
 
             product_data = product.to_dict()
 
-            cache_manager.store_data(f"product:{product_id}", json.dumps(product_data))
+            cache_manager.store_data(f"product:{product_id}", json.dumps(product_data), 600)
 
             return jsonify(product_data), 200
 
@@ -350,6 +360,8 @@ def create_product():
         data = request.get_json()
 
         new_product = products_repo.insert_product(data)
+
+        cache_manager.delete_data("products:All")
 
         return jsonify(new_product.to_dict()), 201
 
@@ -367,6 +379,7 @@ def update_product_by_id(product_id):
         )
 
         cache_manager.delete_data(f"product:{updated_product.id}")
+        cache_manager.delete_data("products:All")
 
         return jsonify(updated_product.to_dict()), 200
 
@@ -379,6 +392,7 @@ def delete_product_by_id(product_id):
         deleted_product = products_repo.delete_product(product_id)
 
         cache_manager.delete_data(f"product:{deleted_product.id}")
+        cache_manager.delete_data("products:All")
 
         return jsonify(deleted_product), 200
 
