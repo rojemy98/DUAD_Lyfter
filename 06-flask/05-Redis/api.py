@@ -51,9 +51,9 @@ session = db_manager.create_session()
 
 
 cache_manager = CacheManager(
-    host="PLACEHOLDER",
+    host="slate-pipe-lenient-60159.db.redis.io",
     port=17262,
-    password="PLACEHOLDER",
+    password="jIpPyWapUgFx4mjR6Zh9f4U8S6cbdeyu",
     decode_responses=True
 )
 
@@ -401,10 +401,18 @@ def delete_product_by_id(product_id):
 @jwt_required(auth_service)
 def purchase():
 
+    products = request.get_json()["products"]
+
     invoice = purchase_service.purchase(
         user_id=g.user["id"],
         products=request.get_json()["products"]
     )
+
+    for product in products:
+        product_id = product["product_id"]
+        cache_manager.delete_data(f"product:{product_id}")
+
+    cache_manager.delete_data("products:All")
 
     return jsonify(invoice.to_dict()), 201
 
