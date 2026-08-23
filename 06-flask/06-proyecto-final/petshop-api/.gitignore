@@ -1,4 +1,9 @@
-# Python cache
+# Environment variables
+.env
+
+# RSA keys
+keys/
+
+# Python
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
