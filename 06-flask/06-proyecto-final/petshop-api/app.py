@@ -8,7 +8,12 @@ from config import (
 )
 
 from database.db_manager import DatabaseManager
-from routes import create_auth_blueprint
+
+from routes import (
+    create_auth_blueprint,
+    create_products_blueprint
+)
+
 from services import JWTManager
 
 
@@ -34,7 +39,13 @@ def create_app():
         jwt_manager
     )
 
+    products_blueprint = create_products_blueprint(
+    db_manager,
+    jwt_manager
+    )
+
     app.register_blueprint(auth_blueprint)
+    app.register_blueprint(products_blueprint)
 
     return app
 

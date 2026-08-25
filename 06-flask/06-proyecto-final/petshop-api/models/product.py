@@ -102,3 +102,24 @@ class Product(Base):
         "InvoiceProduct",
         back_populates="product"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": float(self.price),
+            "stock": self.stock,
+            "is_active": self.is_active,
+            "created_by": self.created_by,
+            "updated_by": self.updated_by,
+            "created_at": (
+                self.created_at.isoformat()
+                if self.created_at
+                else None
+            ),
+            "updated_at": (
+                self.updated_at.isoformat()
+                if self.updated_at
+                else None
+            )
+        }

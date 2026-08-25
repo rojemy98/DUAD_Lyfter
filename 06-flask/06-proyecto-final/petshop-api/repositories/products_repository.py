@@ -19,9 +19,12 @@ class ProductsRepository(BaseRepository[Product]):
 
     def get_available_products(self) -> list[Product]:
         statement = select(self.model).where(
-            self.model.quantity > 0
+            self.model.stock > 0,
+            self.model.is_active.is_(True)
         )
 
         return list(
-            self.session.execute(statement).scalars().all()
+            self.session.execute(statement)
+            .scalars()
+            .all()
         )
