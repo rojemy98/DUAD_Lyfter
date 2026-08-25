@@ -6,7 +6,7 @@ from .billing_addresses_repository import BillingAddressesRepository
 from .invoices_repository import InvoicesRepository
 from .payments_repository import PaymentsRepository
 from .returns_repository import ReturnsRepository
-from .login_history_repository import LoginHistory
+from .login_history_repository import LoginHistoryRepository
 
 
 __all__ = [
