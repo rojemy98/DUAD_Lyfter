@@ -11,7 +11,8 @@ from database.db_manager import DatabaseManager
 
 from routes import (
     create_auth_blueprint,
-    create_products_blueprint
+    create_products_blueprint,
+    create_carts_blueprint
 )
 
 from services import JWTManager
@@ -40,12 +41,18 @@ def create_app():
     )
 
     products_blueprint = create_products_blueprint(
-    db_manager,
-    jwt_manager
+        db_manager,
+        jwt_manager
+    )
+
+    carts_blueprint = create_carts_blueprint(
+        db_manager,
+        jwt_manager
     )
 
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(products_blueprint)
+    app.register_blueprint(carts_blueprint)
 
     return app
 

@@ -59,3 +59,35 @@ class Cart(Base):
         back_populates="cart",
         cascade="all, delete-orphan"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "status": self.status,
+            "created_at": (
+                self.created_at.isoformat()
+                if self.created_at
+                else None
+            ),
+            "updated_at": (
+                self.updated_at.isoformat()
+                if self.updated_at
+                else None
+            ),
+            "products": [
+                {
+                    "product_id": item.product_id,
+                    "name": item.product.name,
+                    "quantity": item.quantity,
+                    "price_at_added": float(
+                        item.price_at_added
+                    ),
+                    "subtotal": float(
+                        item.price_at_added
+                        * item.quantity
+                    )
+                }
+                for item in self.cart_products
+            ]
+        }
