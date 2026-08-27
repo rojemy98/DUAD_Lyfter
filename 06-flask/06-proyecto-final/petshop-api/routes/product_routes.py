@@ -174,3 +174,5 @@ def create_products_blueprint(
 
         finally:
             session.close()
+
+    return products_bp

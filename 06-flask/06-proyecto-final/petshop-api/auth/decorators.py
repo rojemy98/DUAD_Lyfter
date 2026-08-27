@@ -13,18 +13,25 @@ def jwt_required(jwt_manager: JWTManager):
         @wraps(function)
         def wrapper(*args, **kwargs):
 
-            authorization = request.headers.get("Authorization")
+            authorization = request.headers.get(
+                "Authorization"
+            )
 
             if not authorization:
                 return jsonify({
-                    "message": "Authorization header is required."
+                    "message":
+                        "Authorization header is required."
                 }), 401
 
             parts = authorization.split()
 
-            if len(parts) != 2 or parts[0].lower() != "bearer":
+            if (
+                len(parts) != 2
+                or parts[0].lower() != "bearer"
+            ):
                 return jsonify({
-                    "message": "Invalid authorization header."
+                    "message":
+                        "Invalid authorization header."
                 }), 401
 
             token = parts[1]
@@ -50,6 +57,7 @@ def jwt_required(jwt_manager: JWTManager):
 
     return decorator
 
+
 def role_required(required_role: str):
 
     def decorator(function):
@@ -61,12 +69,15 @@ def role_required(required_role: str):
 
             if user is None:
                 return jsonify({
-                    "message": "Authentication is required."
+                    "message":
+                        "Authentication is required."
                 }), 401
 
             if user.get("role") != required_role:
                 return jsonify({
-                    "message": "You do not have permission to access this resource."
+                    "message":
+                        "You do not have permission "
+                        "to access this resource."
                 }), 403
 
             return function(*args, **kwargs)

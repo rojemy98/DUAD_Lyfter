@@ -162,3 +162,34 @@ class ProductService:
         except Exception:
             self.session.rollback()
             raise
+
+    @staticmethod
+    def _validate_price(value) -> Decimal:
+        try:
+            price = Decimal(str(value))
+
+        except (InvalidOperation, TypeError, ValueError):
+            raise ValueError(
+                "Price must be a valid number."
+            )
+
+        if price < 0:
+            raise ValueError(
+                "Price cannot be negative."
+            )
+
+        return price
+
+    @staticmethod
+    def _validate_stock(value) -> int:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(
+                "Stock must be an integer."
+            )
+
+        if value < 0:
+            raise ValueError(
+                "Stock cannot be negative."
+            )
+
+        return value

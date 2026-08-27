@@ -1,4 +1,7 @@
-from .decorators import jwt_required, role_required
+from .decorators import (
+    jwt_required,
+    role_required,
+)
 
 
 __all__ = [

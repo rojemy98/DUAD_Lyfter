@@ -145,6 +145,56 @@ def create_carts_blueprint(
         finally:
             session.close()
 
+    @carts_bp.route("/<int:cart_id>/items/<int:product_id>",methods=["PUT"])
+    @jwt_required(jwt_manager)
+    def update_product_quantity(cart_id, product_id):
+
+        data = request.get_json()
+
+        if not data:
+            return jsonify({
+                "message": "Request body is required."
+            }), 400
+
+        if data.get("quantity") is None:
+            return jsonify({
+                "message": "Quantity is required."
+            }), 400
+
+        session = db_manager.create_session()
+
+        try:
+            service = CartService(session)
+
+            cart = service.update_product_quantity(
+                cart_id=cart_id,
+                product_id=product_id,
+                quantity=data["quantity"],
+                user_id=g.user["id"]
+            )
+
+            return jsonify(
+                cart.to_dict()
+            ), 200
+
+        except LookupError as error:
+            return jsonify({
+                "message": str(error)
+            }), 404
+
+        except PermissionError as error:
+            return jsonify({
+                "message": str(error)
+            }), 403
+
+        except ValueError as error:
+            return jsonify({
+                "message": str(error)
+            }), 400
+
+        finally:
+            session.close()
+
     @carts_bp.route("/<int:cart_id>/items/<int:product_id>",methods=["DELETE"])
     @jwt_required(jwt_manager)
     def remove_product(

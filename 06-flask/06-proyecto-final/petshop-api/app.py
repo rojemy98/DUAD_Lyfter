@@ -19,7 +19,7 @@ from services import JWTManager
 
 
 DATABASE_URL = (
-    "postgresql+psycopg://postgres:password@localhost:5432/postgres"
+    "postgresql+psycopg://postgres:Nyjah2022_@localhost:5432/postgres"
 )
 
 
