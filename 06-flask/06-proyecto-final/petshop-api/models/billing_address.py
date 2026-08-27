@@ -54,3 +54,14 @@ class BillingAddress(Base):
         "Invoice",
         back_populates="billing_address"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "address": self.address,
+            "city": self.city,
+            "province": self.province,
+            "postal_code": self.postal_code,
+            "country": self.country
+        }
