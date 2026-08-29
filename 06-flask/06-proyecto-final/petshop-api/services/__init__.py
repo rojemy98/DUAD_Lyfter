@@ -5,6 +5,7 @@ from .cart_service import CartService
 from .billing_address_service import BillingAddressService
 from .checkout_service import CheckoutService
 from .invoice_service import InvoiceService
+from .return_service import ReturnService
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "BillingAddressService",
     "CheckoutService",
     "InvoiceService",
+    "ReturnService",
 ]

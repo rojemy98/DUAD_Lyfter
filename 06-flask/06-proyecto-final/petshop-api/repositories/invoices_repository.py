@@ -98,3 +98,30 @@ class InvoicesRepository(BaseRepository[Invoice]):
             .scalars()
             .all()
         )
+
+    def get_by_id_with_details(
+        self,
+        invoice_id: int
+    ) -> Invoice | None:
+
+        statement = (
+            select(Invoice)
+            .options(
+                selectinload(
+                    Invoice.invoice_products
+                ).selectinload(
+                    InvoiceProduct.product
+                ),
+                selectinload(
+                    Invoice.returns
+                )
+            )
+            .where(
+                Invoice.id == invoice_id
+            )
+        )
+
+        return (
+            self.session.execute(statement)
+            .scalar_one_or_none()
+        )

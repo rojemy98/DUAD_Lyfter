@@ -14,7 +14,8 @@ from routes import (
     create_products_blueprint,
     create_carts_blueprint,
     create_billing_addresses_blueprint,
-    create_invoices_blueprint
+    create_invoices_blueprint,
+    create_returns_blueprint,
 )
 
 from services import JWTManager
@@ -62,11 +63,17 @@ def create_app():
         jwt_manager
     )
 
+    returns_blueprint = create_returns_blueprint(
+        db_manager,
+        jwt_manager
+    )
+
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(products_blueprint)
     app.register_blueprint(carts_blueprint)
     app.register_blueprint(billing_addresses_blueprint)
     app.register_blueprint(invoices_blueprint)
+    app.register_blueprint(returns_blueprint)
 
     return app
 

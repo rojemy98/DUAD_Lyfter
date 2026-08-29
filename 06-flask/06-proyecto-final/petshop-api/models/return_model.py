@@ -58,3 +58,19 @@ class Return(Base):
         back_populates="return_request",
         cascade="all, delete-orphan"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "invoice_id": self.invoice_id,
+            "reason": self.reason,
+            "status": self.status,
+            "created_at": (
+                self.created_at.isoformat()
+                if self.created_at else None
+            ),
+            "products": [
+                item.to_dict()
+                for item in self.return_products
+            ]
+        }

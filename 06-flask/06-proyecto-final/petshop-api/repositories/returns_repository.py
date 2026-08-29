@@ -1,67 +1,114 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session, selectinload
 
-from models.return_model import Return
-from models.return_product import ReturnProduct
+from models import Return, ReturnProduct
 from repositories.base_repository import BaseRepository
 
 
 class ReturnsRepository(BaseRepository[Return]):
 
     def __init__(self, session: Session):
-        super().__init__(session, Return)
-
-    def get_by_invoice_id(
-        self,
-        invoice_id: int
-    ) -> list[Return]:
-
-        statement = (
-            select(self.model)
-            .where(
-                self.model.invoice_id == invoice_id
-            )
-            .options(
-                selectinload(self.model.return_products)
-                .selectinload(ReturnProduct.invoice_product)
-            )
-            .order_by(
-                self.model.created_at.desc()
-            )
+        super().__init__(
+            session,
+            Return
         )
 
-        return list(
-            self.session.execute(
-                statement
-            ).scalars().all()
-        )
-
-    def get_by_id_with_products(
+    def get_with_products(
         self,
         return_id: int
     ) -> Return | None:
 
         statement = (
-            select(self.model)
-            .where(
-                self.model.id == return_id
-            )
+            select(Return)
             .options(
-                selectinload(self.model.return_products)
-                .selectinload(ReturnProduct.invoice_product)
+                selectinload(
+                    Return.return_products
+                ).selectinload(
+                    ReturnProduct.invoice_product
+                )
+            )
+            .where(
+                Return.id == return_id
             )
         )
 
-        return self.session.execute(
-            statement
-        ).scalar_one_or_none()
+        return (
+            self.session.execute(statement)
+            .scalar_one_or_none()
+        )
 
-    def add_return_product(
+    def get_by_invoice(
         self,
-        return_product: ReturnProduct
-    ) -> ReturnProduct:
+        invoice_id: int
+    ) -> list[Return]:
 
-        self.session.add(return_product)
-        self.session.flush()
+        statement = (
+            select(Return)
+            .options(
+                selectinload(
+                    Return.return_products
+                )
+            )
+            .where(
+                Return.invoice_id == invoice_id
+            )
+            .order_by(
+                Return.created_at.desc()
+            )
+        )
 
-        return return_product
+        return list(
+            self.session.execute(statement)
+            .scalars()
+            .all()
+        )
+
+    def get_all_with_products(
+        self
+    ) -> list[Return]:
+
+        statement = (
+            select(Return)
+            .options(
+                selectinload(
+                    Return.return_products
+                )
+            )
+            .order_by(
+                Return.created_at.desc()
+            )
+        )
+
+        return list(
+            self.session.execute(statement)
+            .scalars()
+            .all()
+        )
+
+    def get_completed_quantity(
+        self,
+        invoice_product_id: int
+    ) -> int:
+
+        statement = (
+            select(
+                func.coalesce(
+                    func.sum(ReturnProduct.quantity),
+                    0
+                )
+            )
+            .join(
+                Return,
+                Return.id == ReturnProduct.return_id
+            )
+            .where(
+                ReturnProduct.invoice_product_id
+                == invoice_product_id,
+                Return.status == "COMPLETED"
+            )
+        )
+
+        return int(
+            self.session.execute(statement)
+            .scalar_one()
+        )

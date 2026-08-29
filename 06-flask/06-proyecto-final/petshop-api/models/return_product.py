@@ -46,3 +46,10 @@ class ReturnProduct(Base):
         "InvoiceProduct",
         back_populates="return_products"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "invoice_product_id": self.invoice_product_id,
+            "quantity": self.quantity
+        }
