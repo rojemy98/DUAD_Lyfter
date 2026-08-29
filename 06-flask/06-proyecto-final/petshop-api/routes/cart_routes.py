@@ -6,7 +6,7 @@ from flask import (
 )
 
 from auth import jwt_required
-from services import CartService
+from services import CartService, CheckoutService
 
 
 def create_carts_blueprint(
@@ -252,6 +252,78 @@ def create_carts_blueprint(
             return jsonify(
                 cart.to_dict()
             ), 200
+
+        except LookupError as error:
+            return jsonify({
+                "message": str(error)
+            }), 404
+
+        except PermissionError as error:
+            return jsonify({
+                "message": str(error)
+            }), 403
+
+        except ValueError as error:
+            return jsonify({
+                "message": str(error)
+            }), 400
+
+        finally:
+            session.close()
+
+    @carts_bp.route("/<int:cart_id>/checkout",methods=["POST"])
+    @jwt_required(jwt_manager)
+    def checkout(cart_id):
+
+        data = request.get_json()
+
+        if not data:
+            return jsonify({
+                "message": "Request body is required."
+            }), 400
+
+        required_fields = [
+            "billing_address_id",
+            "payment_method",
+            "payment_reference"
+        ]
+
+        missing_fields = [
+            field
+            for field in required_fields
+            if data.get(field) is None
+        ]
+
+        if missing_fields:
+            return jsonify({
+                "message": "Missing required fields.",
+                "fields": missing_fields
+            }), 400
+
+        session = db_manager.create_session()
+
+        try:
+            service = CheckoutService(session)
+
+            invoice = service.checkout(
+                cart_id=cart_id,
+                user_id=g.user["id"],
+                billing_address_id=data[
+                    "billing_address_id"
+                ],
+                payment_method=data[
+                    "payment_method"
+                ],
+                payment_reference=data[
+                    "payment_reference"
+                ]
+            )
+
+            return jsonify({
+                "message": "Checkout completed successfully.",
+                "invoice_number": invoice.invoice_number,
+                "total": float(invoice.total)
+            }), 201
 
         except LookupError as error:
             return jsonify({
