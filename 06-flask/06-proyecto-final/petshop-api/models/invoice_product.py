@@ -72,3 +72,13 @@ class InvoiceProduct(Base):
         "ReturnProduct",
         back_populates="invoice_product"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "product_id": self.product_id,
+            "product_name": self.product.name if self.product else None,
+            "quantity": self.quantity,
+            "unit_price": float(self.unit_price),
+            "subtotal": float(self.subtotal)
+        }

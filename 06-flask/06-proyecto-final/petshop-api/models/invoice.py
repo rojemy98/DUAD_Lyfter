@@ -91,3 +91,25 @@ class Invoice(Base):
         "Return",
         back_populates="invoice"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "invoice_number": self.invoice_number,
+            "user_id": self.user_id,
+            "billing_address_id": self.billing_address_id,
+            "total": float(self.total),
+            "status": self.status,
+            "purchase_date": (
+                self.purchase_date.isoformat()
+                if self.purchase_date else None
+            ),
+            "products": [
+                item.to_dict()
+                for item in self.invoice_products
+            ],
+            "payment": (
+                self.payment.to_dict()
+                if self.payment else None
+            )
+        }

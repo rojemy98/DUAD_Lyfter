@@ -58,3 +58,15 @@ class Payment(Base):
         "Invoice",
         back_populates="payment"
     )
+
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "payment_method": self.payment_method,
+            "payment_reference": self.payment_reference,
+            "status": self.status,
+            "created_at": (
+                self.created_at.isoformat()
+                if self.created_at else None
+            )
+        }
