@@ -3,10 +3,15 @@ from flask import Blueprint, request, jsonify, g
 from auth import jwt_required, role_required
 from services import ProductService
 
+import json
+
+from config import CACHE_TTL
+
 
 def create_products_blueprint(
     db_manager,
-    jwt_manager
+    jwt_manager,
+    cache_manager
 ):
     products_bp = Blueprint(
         "products",
@@ -18,6 +23,22 @@ def create_products_blueprint(
     @jwt_required(jwt_manager)
     def get_products():
 
+        cache_key = "products:all"
+
+        cached_data = cache_manager.get_data(
+            cache_key
+        )
+
+        if cached_data is not None:
+
+            print("CACHE HIT:", cache_key)
+
+            return jsonify(
+                json.loads(cached_data)
+            ), 200
+
+        print("CACHE MISS:", cache_key)
+
         session = db_manager.create_session()
 
         try:
@@ -25,17 +46,43 @@ def create_products_blueprint(
 
             products = service.get_all_products()
 
-            return jsonify([
+            products_data = [
                 product.to_dict()
                 for product in products
-            ]), 200
+            ]
+
+            cache_manager.store_data(
+                cache_key,
+                json.dumps(products_data),
+                CACHE_TTL
+            )
+
+            return jsonify(
+                products_data
+            ), 200
 
         finally:
             session.close()
 
-    @products_bp.route("/<int:product_id>", methods=["GET"])
+    @products_bp.route("/<int:product_id>",methods=["GET"])
     @jwt_required(jwt_manager)
     def get_product(product_id):
+
+        cache_key = f"product:{product_id}"
+
+        cached_data = cache_manager.get_data(
+            cache_key
+        )
+
+        if cached_data is not None:
+
+            print("CACHE HIT:", cache_key)
+
+            return jsonify(
+                json.loads(cached_data)
+            ), 200
+
+        print("CACHE MISS:", cache_key)
 
         session = db_manager.create_session()
 
@@ -46,8 +93,16 @@ def create_products_blueprint(
                 product_id
             )
 
+            product_data = product.to_dict()
+
+            cache_manager.store_data(
+                cache_key,
+                json.dumps(product_data),
+                CACHE_TTL
+            )
+
             return jsonify(
-                product.to_dict()
+                product_data
             ), 200
 
         except LookupError as error:
@@ -98,6 +153,10 @@ def create_products_blueprint(
                 user_id=g.user["id"]
             )
 
+            cache_manager.delete_data(
+                "products:all"
+            )
+
             return jsonify(
                 product.to_dict()
             ), 201
@@ -133,6 +192,14 @@ def create_products_blueprint(
                 user_id=g.user["id"]
             )
 
+            cache_manager.delete_data(
+                f"product:{product_id}"
+            )
+
+            cache_manager.delete_data(
+                "products:all"
+            )
+
             return jsonify(
                 product.to_dict()
             ), 200
@@ -163,6 +230,14 @@ def create_products_blueprint(
             service.delete_product(
                 product_id=product_id,
                 user_id=g.user["id"]
+            )
+
+            cache_manager.delete_data(
+                f"product:{product_id}"
+            )
+
+            cache_manager.delete_data(
+                "products:all"
             )
 
             return "", 204

@@ -21,8 +21,9 @@ from repositories import (
 
 class CheckoutService:
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, cache_manager):
         self.session = session
+        self.cache_manager = cache_manager
 
         self.carts_repository = CartsRepository(session)
         self.products_repository = ProductsRepository(session)
@@ -98,6 +99,8 @@ class CheckoutService:
 
             validated_items = []
 
+            product_ids = []
+
             for cart_item in cart.cart_products:
 
                 product = (
@@ -141,6 +144,8 @@ class CheckoutService:
                     "subtotal": subtotal
                 })
 
+                product_ids.append(product.id)
+
             invoice = Invoice(
                 user_id=user_id,
                 invoice_number=self._generate_invoice_number(),
@@ -183,6 +188,15 @@ class CheckoutService:
             cart.status = "COMPLETED"
 
             self.session.commit()
+
+            for product_id in product_ids:
+                self.cache_manager.delete_data(
+                    f"product:{product_id}"
+                )
+
+            self.cache_manager.delete_data(
+                "products:all"
+            )
 
             return invoice
 

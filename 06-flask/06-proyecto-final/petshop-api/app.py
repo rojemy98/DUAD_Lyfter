@@ -1,13 +1,18 @@
 from flask import Flask
 
 from config import (
-    load_private_key,
-    load_public_key,
+    DATABASE_URL,
+    REDIS_URL,
+    CACHE_TTL,
     JWT_ALGORITHM,
     JWT_ACCESS_TOKEN_EXPIRES,
+    load_private_key,
+    load_public_key,
 )
 
-from database.db_manager import DatabaseManager
+from database import DatabaseManager
+from cache import CacheManager
+from services import JWTManager
 
 from routes import (
     create_auth_blueprint,
@@ -16,13 +21,6 @@ from routes import (
     create_billing_addresses_blueprint,
     create_invoices_blueprint,
     create_returns_blueprint,
-)
-
-from services import JWTManager
-
-
-DATABASE_URL = (
-    "postgresql+psycopg://postgres:Nyjah2022_@localhost:5432/postgres"
 )
 
 
@@ -38,6 +36,8 @@ def create_app():
         access_token_expires=JWT_ACCESS_TOKEN_EXPIRES
     )
 
+    cache_manager = CacheManager(REDIS_URL)
+
     auth_blueprint = create_auth_blueprint(
         db_manager,
         jwt_manager
@@ -45,12 +45,14 @@ def create_app():
 
     products_blueprint = create_products_blueprint(
         db_manager,
-        jwt_manager
+        jwt_manager,
+        cache_manager
     )
 
     carts_blueprint = create_carts_blueprint(
         db_manager,
-        jwt_manager
+        jwt_manager,
+        cache_manager
     )
 
     billing_addresses_blueprint = create_billing_addresses_blueprint(
@@ -65,7 +67,8 @@ def create_app():
 
     returns_blueprint = create_returns_blueprint(
         db_manager,
-        jwt_manager
+        jwt_manager,
+        cache_manager
     )
 
     app.register_blueprint(auth_blueprint)

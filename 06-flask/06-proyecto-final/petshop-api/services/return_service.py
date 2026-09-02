@@ -10,8 +10,10 @@ from repositories import (
 
 class ReturnService:
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, cache_manager):
         self.session = session
+
+        self.cache_manager = cache_manager
 
         self.returns_repository = (
             ReturnsRepository(session)
@@ -212,13 +214,15 @@ class ReturnService:
 
         try:
 
+            product_ids = []
+
             if new_status == "COMPLETED":
 
                 return_request.status = "COMPLETED"
 
                 self.session.flush()
 
-                self._complete_return(
+                product_ids = self._complete_return(
                     return_request
                 )
 
@@ -226,6 +230,16 @@ class ReturnService:
                 return_request.status = new_status
 
             self.session.commit()
+
+            for product_id in product_ids:
+                self.cache_manager.delete_data(
+                    f"product:{product_id}"
+                )
+
+            if product_ids:
+                self.cache_manager.delete_data(
+                    "products:all"
+                )
 
             return (
                 self.returns_repository
@@ -285,7 +299,9 @@ class ReturnService:
     def _complete_return(
         self,
         return_request: Return
-    ) -> None:
+    ) -> list[int]:
+
+        product_ids = []
 
         invoice = (
             self.invoices_repository
@@ -343,8 +359,12 @@ class ReturnService:
 
             product.stock += return_product.quantity
 
+            product_ids.append(product.id)
+
         self.session.flush()
 
         invoice.status = (
             self._calculate_invoice_status(invoice)
         )
+
+        return product_ids

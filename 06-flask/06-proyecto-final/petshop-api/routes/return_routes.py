@@ -15,7 +15,8 @@ from services import ReturnService
 
 def create_returns_blueprint(
     db_manager,
-    jwt_manager
+    jwt_manager,
+    cache_manager
 ):
 
     returns_bp = Blueprint(
@@ -48,7 +49,7 @@ def create_returns_blueprint(
         session = db_manager.create_session()
 
         try:
-            service = ReturnService(session)
+            service = ReturnService(session, cache_manager)
 
             return_request = (
                 service.create_return(
@@ -101,7 +102,7 @@ def create_returns_blueprint(
         session = db_manager.create_session()
 
         try:
-            service = ReturnService(session)
+            service = ReturnService(session, cache_manager)
 
             return_request = (
                 service.update_return_status(

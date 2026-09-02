@@ -11,7 +11,8 @@ from services import CartService, CheckoutService
 
 def create_carts_blueprint(
     db_manager,
-    jwt_manager
+    jwt_manager,
+    cache_manager
 ):
     carts_bp = Blueprint(
         "carts",
@@ -303,7 +304,7 @@ def create_carts_blueprint(
         session = db_manager.create_session()
 
         try:
-            service = CheckoutService(session)
+            service = CheckoutService(session, cache_manager)
 
             invoice = service.checkout(
                 cart_id=cart_id,
