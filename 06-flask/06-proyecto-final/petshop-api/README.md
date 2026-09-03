@@ -6,6 +6,28 @@ The application provides authentication, role-based authorization, product manag
 
 The project uses a layered architecture separating routes, services, repositories, and database models.
 
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Technologies](#technologies)
+- [Database](#database)
+- [Database ER Diagram](#database-er-diagram)
+- [Installation](#installation)
+- [Environment Variables](#environment-variables)
+- [RSA Keys](#rsa-keys)
+- [Running the Application](#running-the-application)
+- [Authentication](#authentication)
+- [Roles](#roles)
+- [Redis Cache](#redis-cache)
+- [Transactions](#transactions)
+- [Testing](#testing)
+- [Test Coverage](#test-coverage)
+- [Security](#security)
+- [Recommended .gitignore](#recommended-gitignore)
+- [Author](#author)
+
 ---
 
 ## Features
