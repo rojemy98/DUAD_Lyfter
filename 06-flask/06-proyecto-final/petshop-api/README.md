@@ -305,6 +305,15 @@ SQLAlchemy relationships are used to represent associations between entities.
 
 ---
 
+## Database ER Diagram
+
+The following Entity-Relationship Diagram represents the PostgreSQL
+database structure used by the application.
+
+![PetShop E-Commerce Database ER Diagram](docs/database-diagram.jpg)
+
+---
+
 ## Installation
 
 ### Clone the repository
