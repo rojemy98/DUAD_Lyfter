@@ -1,4 +1,7 @@
 from database.db_manager import DatabaseManager
+
+from config import DATABASE_URL
+
 from models import (
     User,
     LoginHistory,
@@ -14,15 +17,22 @@ from models import (
 )
 
 
-DATABASE_URL = (
-    "postgresql+psycopg://postgres:[password]@localhost:5432/postgres"
-)
+if __name__ == "__main__":
 
+    if not DATABASE_URL:
+        raise ValueError(
+            "DATABASE_URL environment variable is not configured."
+        )
 
-db_manager = DatabaseManager(DATABASE_URL)
+    db_manager = DatabaseManager(DATABASE_URL)
 
-db_manager.create_tables()
+    try:
+        db_manager.create_tables()
 
-print("Database schema and tables created successfully.")
+        print(
+            "Database schema and tables "
+            "created successfully."
+        )
 
-db_manager.close()
+    finally:
+        db_manager.close()

@@ -16,9 +16,8 @@ The project uses a layered architecture separating routes, services, repositorie
 - [Database ER Diagram](#database-er-diagram)
 - [API Documentation](#api-documentation)
 - [Installation](#installation)
-- [Environment Variables](#environment-variables)
-- [RSA Keys](#rsa-keys)
-- [Running the Application](#running-the-application)
+- [Project Setup](#project-setup)
+- [Quick Start](#quick-start)
 - [Authentication](#authentication)
 - [Roles](#roles)
 - [Redis Cache](#redis-cache)
@@ -349,31 +348,24 @@ request bodies, and examples are available here:
 
 ## Installation
 
-### Clone the repository
-
-Clone the `proyecto-final-flask` branch:
+### 1. Clone the repository
 
 ```bash
 git clone -b proyecto-final-flask https://github.com/rojemy98/DUAD_Lyfter.git
 ```
 
-### Navigate to the project directory
+### 2. Navigate to the project directory
 
 ```bash
 cd DUAD_Lyfter/06-flask/06-proyecto-final/petshop-api
 ```
 
-### Create a virtual environment
+### 3. Create and activate a virtual environment
 
 #### Windows
 
 ```powershell
 python -m venv venv
-```
-
-Activate the virtual environment:
-
-```powershell
 .\venv\Scripts\Activate.ps1
 ```
 
@@ -381,23 +373,18 @@ Activate the virtual environment:
 
 ```bash
 python3 -m venv venv
-```
-
-Activate the virtual environment:
-
-```bash
 source venv/bin/activate
 ```
 
-### Install dependencies
+### 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Configure environment variables
+### 5. Configure environment variables
 
-Create a `.env` file in the `petshop-api` directory:
+Create a `.env` file in the project root.
 
 Example:
 
@@ -411,41 +398,89 @@ JWT_ALGORITHM=RS256
 JWT_ACCESS_TOKEN_EXPIRES=900
 ```
 
-Do not commit the `.env` file to source control.
+Make sure PostgreSQL and Redis are available before starting the application.
+
+> Do not commit the `.env` file to Git.
 
 ---
 
-## RSA Keys
+## Project Setup
 
-JWT tokens are signed using RS256.
+After installing the dependencies and configuring the `.env` file, run the following setup steps from the `petshop-api` directory.
 
-The project expects:
+### 1. Generate RSA keys
 
-```text
-keys/private.pem
-keys/public.pem
+The application uses RS256 for JWT authentication.
+
+Run:
+
+```bash
+python -m scripts.generate_keys
 ```
 
-The private key is used to sign JWT tokens.
+This should generate:
 
-The public key is used to verify JWT tokens.
+```text
+keys/
+├── private.pem
+└── public.pem
+```
 
-Private keys must never be committed to a public repository.
+The private key is used to sign JWT tokens and the public key is used to verify them.
 
----
+> Never commit `private.pem` to a public repository.
 
-## Running the Application
+### 2. Create the database tables
 
-From the project root:
+Make sure the PostgreSQL database specified in `DATABASE_URL` already exists.
+
+Then run:
+
+```bash
+python -m database.create_tables
+```
+
+This creates the required tables using SQLAlchemy ORM inside the PostgreSQL schema:
+
+```text
+petshop_ecommerce
+```
+
+No SQL scripts are required.
+
+### 3. Seed the database
+
+To populate the database with initial or test data, run:
+
+```bash
+python -m scripts.seed
+```
+
+This step is useful for creating sample users, products, invoices, or other initial data required for testing the API.
+
+### 4. Run the application
 
 ```bash
 python app.py
 ```
 
-The development API runs at:
+The API will be available at:
 
 ```text
 http://localhost:5000
+```
+
+---
+
+## Quick Start
+
+After configuring `.env`, the complete setup sequence is:
+
+```bash
+python -m scripts.generate_keys
+python -m database.create_tables
+python -m scripts.seed
+python app.py
 ```
 
 ---
