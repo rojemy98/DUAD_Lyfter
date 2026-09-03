@@ -23,6 +23,7 @@ The project uses a layered architecture separating routes, services, repositorie
 - [Redis Cache](#redis-cache)
 - [Transactions](#transactions)
 - [Testing](#testing)
+- [Automated Test Report](#automated-test-report)
 - [Test Coverage](#test-coverage)
 - [Security](#security)
 - [Recommended .gitignore](#recommended-gitignore)
@@ -600,6 +601,17 @@ Then open:
 
 ```text
 htmlcov/index.html
+```
+
+---
+
+## Automated Test Report
+
+The project includes a test runner that executes the complete unit test
+suite and generates a coverage report.
+
+```bash
+python -m scripts.run_tests
 ```
 
 ---
