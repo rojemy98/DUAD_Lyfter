@@ -823,7 +823,6 @@ Authorization: Bearer <access_token>
 Example:
 
 ```bash
-curl \
-  -H "Authorization: Bearer <access_token>" \
+curl \ -H "Authorization: Bearer <access_token>" \
   http://localhost:5000/products
 ```
