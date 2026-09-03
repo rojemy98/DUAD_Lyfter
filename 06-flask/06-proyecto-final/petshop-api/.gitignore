@@ -1,9 +1,30 @@
 # Environment variables
 .env
+.env.*
 
-# RSA keys
-keys/
+# Virtual environments
+venv/
+.venv/
 
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# RSA private keys
+keys/private.pem
+*.key
