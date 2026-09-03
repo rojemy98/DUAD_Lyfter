@@ -14,6 +14,7 @@ The project uses a layered architecture separating routes, services, repositorie
 - [Technologies](#technologies)
 - [Database](#database)
 - [Database ER Diagram](#database-er-diagram)
+- [API Documentation](#api-documentation)
 - [Installation](#installation)
 - [Environment Variables](#environment-variables)
 - [RSA Keys](#rsa-keys)
@@ -334,6 +335,15 @@ The following Entity-Relationship Diagram represents the PostgreSQL
 database structure used by the application.
 
 ![PetShop E-Commerce Database ER Diagram](docs/database-diagram.jpg)
+
+---
+
+## API Documentation
+
+Complete endpoint documentation, authentication requirements,
+request bodies, and examples are available here:
+
+[View API Documentation](docs/API.md)
 
 ---
 
