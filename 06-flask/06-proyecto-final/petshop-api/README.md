@@ -389,7 +389,7 @@ Create a `.env` file in the project root.
 Example:
 
 ```env
-DATABASE_URL=postgresql+psycopg://username:password@localhost:5432/petshop
+DATABASE_URL=postgresql+psycopg://username:password@localhost:5432/postgres
 REDIS_URL=redis://localhost:6379/0
 
 CACHE_TTL=600
@@ -458,7 +458,56 @@ python -m scripts.seed
 
 This step is useful for creating sample users, products, invoices, or other initial data required for testing the API.
 
-### 4. Run the application
+### 4. Configure Redis
+
+The application uses Redis to cache product information.
+
+Redis does not need to be hosted in the cloud. For local development, it can be executed locally using Docker.
+
+Make sure Docker is installed and running, then create a Redis container:
+
+```bash
+docker run --name petshop-redis -p 6379:6379 -d redis
+```
+
+Verify that Redis is running:
+
+```bash
+docker exec -it petshop-redis redis-cli ping
+```
+
+The expected response is:
+
+```text
+PONG
+```
+
+Redis will now be available at:
+
+```text
+redis://localhost:6379/0
+```
+
+#### Managing the Redis container
+
+If the container already exists but is stopped, start it with:
+
+```bash
+docker start petshop-redis
+```
+
+To stop it:
+
+```bash
+docker stop petshop-redis
+```
+
+You do not need to run `docker run` every time. That command creates the container. After it has been created, use `docker start` and `docker stop`.
+
+---
+
+
+### 5. Run the application
 
 ```bash
 python app.py
