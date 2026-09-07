@@ -12,7 +12,6 @@ class ReturnService:
 
     def __init__(self, session: Session, cache_manager):
         self.session = session
-
         self.cache_manager = cache_manager
 
         self.returns_repository = (
@@ -26,6 +25,48 @@ class ReturnService:
         self.invoices_repository = (
             InvoicesRepository(session)
         )
+
+    def get_returns(self, user_id, role):
+
+        if role == "ADMIN":
+            return (
+                self.returns_repository
+                .get_all_with_products()
+            )
+
+        return (
+            self.returns_repository
+            .get_by_user_id(user_id)
+        )
+
+    def get_return_by_id(
+        self,
+        return_id,
+        user_id,
+        role
+    ):
+
+        return_request = (
+            self.returns_repository
+            .get_by_id(return_id)
+        )
+
+        if return_request is None:
+            raise LookupError(
+                "Return not found."
+            )
+
+        if (
+            role != "ADMIN"
+            and return_request.invoice.user_id
+            != user_id
+        ):
+            raise PermissionError(
+                "You do not have access "
+                "to this return."
+            )
+
+        return return_request
 
     def create_return(
         self,
@@ -49,7 +90,8 @@ class ReturnService:
 
         if invoice.user_id != user_id:
             raise PermissionError(
-                "You do not have access to this invoice."
+                "You do not have access "
+                "to this invoice."
             )
 
         if invoice.status not in {
@@ -71,6 +113,19 @@ class ReturnService:
             )
 
         validated_products = []
+
+        invoice_product_ids = [
+            invoice_product.id
+            for invoice_product
+            in invoice.invoice_products
+        ]
+
+        completed_quantities = (
+            self.return_products_repository
+            .get_completed_quantities(
+                invoice_product_ids
+            )
+        )
 
         for item in products:
 
@@ -99,13 +154,14 @@ class ReturnService:
                 raise ValueError(
                     f"Invoice product "
                     f"{invoice_product_id} "
-                    f"does not belong to this invoice."
+                    f"does not belong "
+                    f"to this invoice."
                 )
 
             already_returned = (
-                self.returns_repository
-                .get_completed_quantity(
-                    invoice_product.id
+                completed_quantities.get(
+                    invoice_product.id,
+                    0
                 )
             )
 
@@ -129,6 +185,7 @@ class ReturnService:
             })
 
         try:
+
             return_request = Return(
                 invoice_id=invoice.id,
                 reason=reason.strip(),
@@ -176,7 +233,9 @@ class ReturnService:
 
         return_request = (
             self.returns_repository
-            .get_with_products(return_id)
+            .get_with_products(
+                return_id
+            )
         )
 
         if return_request is None:
@@ -218,12 +277,16 @@ class ReturnService:
 
             if new_status == "COMPLETED":
 
-                return_request.status = "COMPLETED"
+                return_request.status = (
+                    "COMPLETED"
+                )
 
                 self.session.flush()
 
-                product_ids = self._complete_return(
-                    return_request
+                product_ids = (
+                    self._complete_return(
+                        return_request
+                    )
                 )
 
             else:
@@ -243,7 +306,9 @@ class ReturnService:
 
             return (
                 self.returns_repository
-                .get_with_products(return_id)
+                .get_with_products(
+                    return_id
+                )
             )
 
         except Exception:
@@ -255,16 +320,27 @@ class ReturnService:
         invoice
     ) -> str:
 
-        all_returned = True
+        invoice_product_ids = [
+            invoice_product.id
+            for invoice_product
+            in invoice.invoice_products
+        ]
+
+        completed_quantities = (
+            self.return_products_repository
+            .get_completed_quantities(
+                invoice_product_ids
+            )
+        )
 
         for invoice_product in (
             invoice.invoice_products
         ):
 
             returned_quantity = (
-                self.returns_repository
-                .get_completed_quantity(
-                    invoice_product.id
+                completed_quantities.get(
+                    invoice_product.id,
+                    0
                 )
             )
 
@@ -272,16 +348,14 @@ class ReturnService:
                 returned_quantity
                 < invoice_product.quantity
             ):
-                all_returned = False
-                break
+                return "PARTIALLY_REFUNDED"
 
-        if all_returned:
-            return "REFUNDED"
+        return "REFUNDED"
 
-        return "PARTIALLY_REFUNDED"
-    
     @staticmethod
-    def _validate_quantity(quantity: int) -> None:
+    def _validate_quantity(
+        quantity: int
+    ) -> None:
 
         if (
             isinstance(quantity, bool)
@@ -293,7 +367,8 @@ class ReturnService:
 
         if quantity <= 0:
             raise ValueError(
-                "Quantity must be greater than zero."
+                "Quantity must be "
+                "greater than zero."
             )
 
     def _complete_return(
@@ -315,7 +390,22 @@ class ReturnService:
                 "Invoice not found."
             )
 
-        for return_product in return_request.return_products:
+        invoice_product_ids = [
+            return_product.invoice_product_id
+            for return_product
+            in return_request.return_products
+        ]
+
+        completed_quantities = (
+            self.return_products_repository
+            .get_completed_quantities(
+                invoice_product_ids
+            )
+        )
+
+        for return_product in (
+            return_request.return_products
+        ):
 
             invoice_product = (
                 return_product.invoice_product
@@ -327,9 +417,9 @@ class ReturnService:
                 )
 
             completed_quantity = (
-                self.returns_repository
-                .get_completed_quantity(
-                    invoice_product.id
+                completed_quantities.get(
+                    invoice_product.id,
+                    0
                 )
             )
 
@@ -343,11 +433,16 @@ class ReturnService:
                 - previously_returned
             )
 
-            if return_product.quantity > remaining:
+            if (
+                return_product.quantity
+                > remaining
+            ):
                 raise ValueError(
-                    f"Cannot complete return for "
-                    f"invoice product {invoice_product.id}. "
-                    f"Only {remaining} units remain returnable."
+                    f"Cannot complete return "
+                    f"for invoice product "
+                    f"{invoice_product.id}. "
+                    f"Only {remaining} units "
+                    f"remain returnable."
                 )
 
             product = invoice_product.product
@@ -357,14 +452,20 @@ class ReturnService:
                     "Product not found."
                 )
 
-            product.stock += return_product.quantity
+            product.stock += (
+                return_product.quantity
+            )
 
-            product_ids.append(product.id)
+            product_ids.append(
+                product.id
+            )
 
         self.session.flush()
 
         invoice.status = (
-            self._calculate_invoice_status(invoice)
+            self._calculate_invoice_status(
+                invoice
+            )
         )
 
         return product_ids

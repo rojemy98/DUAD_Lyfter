@@ -20,7 +20,7 @@ def create_carts_blueprint(
         url_prefix="/carts"
     )
 
-    @carts_bp.route("/active",methods=["GET"])
+    @carts_bp.route("/active", methods=["GET"])
     @jwt_required(jwt_manager)
     def get_active_cart():
 
@@ -29,13 +29,18 @@ def create_carts_blueprint(
         try:
             service = CartService(session)
 
-            cart = service.get_or_create_active_cart(
+            cart = service.get_active_cart(
                 user_id=g.user["id"]
             )
 
             return jsonify(
                 cart.to_dict()
             ), 200
+
+        except LookupError as error:
+            return jsonify({
+                "message": str(error)
+            }), 404
 
         finally:
             session.close()
@@ -88,6 +93,31 @@ def create_carts_blueprint(
             return jsonify({
                 "message": str(error)
             }), 403
+
+        finally:
+            session.close()
+
+    @carts_bp.route("", methods=["POST"])
+    @jwt_required(jwt_manager)
+    def create_cart():
+
+        session = db_manager.create_session()
+
+        try:
+            service = CartService(session)
+
+            cart = service.create_cart(
+                user_id=g.user["id"]
+            )
+
+            return jsonify(
+                cart.to_dict()
+            ), 201
+
+        except ValueError as error:
+            return jsonify({
+                "message": str(error)
+            }), 409
 
         finally:
             session.close()

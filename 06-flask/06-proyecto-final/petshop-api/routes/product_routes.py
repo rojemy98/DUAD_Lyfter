@@ -44,7 +44,7 @@ def create_products_blueprint(
         try:
             service = ProductService(session)
 
-            products = service.get_all_products()
+            products = service.get_available_products()
 
             products_data = [
                 product.to_dict()

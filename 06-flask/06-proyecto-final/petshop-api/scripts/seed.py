@@ -11,10 +11,7 @@ from repositories import (
     ProductsRepository,
 )
 
-
-DATABASE_URL = (
-    "postgresql+psycopg://postgres:password@localhost:5432/postgres"
-)
+from config import DATABASE_URL
 
 fake = Faker()
 
@@ -121,7 +118,13 @@ def seed_products(
 
 def main():
 
+    if not DATABASE_URL:
+        raise ValueError(
+            "DATABASE_URL environment variable is not configured."
+        )
+
     db_manager = DatabaseManager(DATABASE_URL)
+
     session = db_manager.create_session()
 
     try:

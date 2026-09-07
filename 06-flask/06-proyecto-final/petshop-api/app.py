@@ -21,6 +21,7 @@ from routes import (
     create_billing_addresses_blueprint,
     create_invoices_blueprint,
     create_returns_blueprint,
+    create_user_blueprint,
 )
 
 
@@ -71,12 +72,18 @@ def create_app():
         cache_manager
     )
 
+    users_blueprint = create_user_blueprint(
+        db_manager,
+        jwt_manager,
+    )
+
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(products_blueprint)
     app.register_blueprint(carts_blueprint)
     app.register_blueprint(billing_addresses_blueprint)
     app.register_blueprint(invoices_blueprint)
     app.register_blueprint(returns_blueprint)
+    app.register_blueprint(users_blueprint)
 
     return app
 

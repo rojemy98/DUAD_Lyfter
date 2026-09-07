@@ -16,18 +16,26 @@ class CartService:
         self.carts_repository = CartsRepository(session)
         self.products_repository = ProductsRepository(session)
 
-    def get_or_create_active_cart(
-        self,
-        user_id: int
-    ) -> Cart:
+    def get_active_cart(self, user_id):
 
-        cart = (
+        cart = self.carts_repository.get_active_cart_by_user(user_id)
+
+        if cart is None:
+            raise LookupError("Active cart not found.")
+
+        return cart
+
+    def create_cart(self, user_id):
+
+        active_cart = (
             self.carts_repository
             .get_active_cart_by_user(user_id)
         )
 
-        if cart:
-            return cart
+        if active_cart:
+            raise ValueError(
+                "User already has an active cart."
+            )
 
         cart = Cart(
             user_id=user_id,
@@ -36,6 +44,7 @@ class CartService:
 
         try:
             self.carts_repository.create(cart)
+
             self.session.commit()
 
             return cart
@@ -43,26 +52,6 @@ class CartService:
         except Exception:
             self.session.rollback()
             raise
-
-    def get_cart(
-        self,
-        cart_id: int,
-        user_id: int
-    ) -> Cart:
-
-        cart = self.carts_repository.get_cart_with_products(
-            cart_id
-        )
-
-        if cart is None:
-            raise LookupError("Cart not found.")
-
-        if cart.user_id != user_id:
-            raise PermissionError(
-                "You do not have access to this cart."
-            )
-
-        return cart
 
     def get_user_carts(
         self,
@@ -88,6 +77,7 @@ class CartService:
 
         self._validate_active_cart(cart)
         self._validate_quantity(quantity)
+        self._validate_product_id(product_id)
 
         product = self.products_repository.get_by_id(
             product_id
@@ -226,6 +216,7 @@ class CartService:
         )
 
         self._validate_active_cart(cart)
+        self._validate_product_id(product_id)
 
         cart_product = (
             self.carts_repository.get_cart_product(
@@ -307,4 +298,16 @@ class CartService:
         if quantity <= 0:
             raise ValueError(
                 "Quantity must be greater than zero."
+            )
+
+    @staticmethod
+    def _validate_product_id(product_id):
+
+        if (
+            not isinstance(product_id, int)
+            or isinstance(product_id, bool)
+            or product_id <= 0
+        ):
+            raise ValueError(
+                "product_id must be a positive integer."
             )

@@ -20,14 +20,6 @@ from config import (
 )
 
 
-jwt_manager = JWTManager(
-    private_key=load_private_key(),
-    public_key=load_public_key(),
-    algorithm=JWT_ALGORITHM,
-    access_token_expires=JWT_ACCESS_TOKEN_EXPIRES
-)
-
-
 class AuthService:
 
     def __init__(

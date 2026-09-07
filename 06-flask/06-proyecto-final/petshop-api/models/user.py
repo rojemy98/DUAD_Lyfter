@@ -84,3 +84,16 @@ class User(Base):
         foreign_keys="Product.updated_by",
         back_populates="updater"
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "role": self.role,
+            "registration_date":
+                self.registration_date.isoformat()
+                if self.registration_date
+                else None
+        }

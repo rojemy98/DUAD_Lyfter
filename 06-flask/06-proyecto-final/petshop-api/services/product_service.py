@@ -15,6 +15,11 @@ class ProductService:
     def get_all_products(self) -> list[Product]:
         return self.products_repository.get_all()
 
+    def get_available_products(self):
+        return (
+            self.products_repository.get_available_products()
+        )
+
     def get_product_by_id(
         self,
         product_id: int
