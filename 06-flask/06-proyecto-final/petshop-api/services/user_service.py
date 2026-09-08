@@ -103,7 +103,7 @@ class UserService:
             user.last_name = data["last_name"].strip()
 
         if "password" in data:
-            user.password = generate_password_hash(
+            user.password_hash = generate_password_hash(
                 data["password"]
             )
 
