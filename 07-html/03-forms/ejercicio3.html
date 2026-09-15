@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reservación de Hotel</title>
+  </head>
+  <body>
+    <h1>Reservación de Hotel</h1>
+
+    <form action="confirmacion.html">
+      <label>Nombre:</label>
+      <input type="text" name="nombre" required />
+
+      <br /><br />
+
+      <label>Correo:</label>
+      <input type="email" name="correo" required />
+
+      <br /><br />
+
+      <label>Fecha de llegada:</label>
+      <input type="date" name="fecha_llegada" required />
+
+      <br /><br />
+
+      <label>Fecha de salida:</label>
+      <input type="date" name="fecha_salida" required />
+
+      <br /><br />
+
+      <h2>Tipo de habitación</h2>
+
+      <input type="radio" name="habitacion" value="estandar" required />
+      <label>Estándar</label>
+
+      <br />
+
+      <input type="radio" name="habitacion" value="premium" />
+      <label>Premium</label>
+
+      <br />
+
+      <input type="radio" name="habitacion" value="suite" />
+      <label>Suite</label>
+
+      <br /><br />
+
+      <h2>Servicios adicionales</h2>
+
+      <input type="checkbox" name="desayuno" />
+      <label>Desayuno</label>
+
+      <br />
+
+      <input type="checkbox" name="wifi" />
+      <label>Wifi</label>
+
+      <br />
+
+      <input type="checkbox" name="parqueo" />
+      <label>Parqueo</label>
+
+      <br /><br />
+
+      <button type="submit">Reservar</button>
+    </form>
+  </body>
+</html>

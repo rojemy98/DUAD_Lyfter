@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inscripción a un Curso</title>
+  </head>
+  <body>
+    <h1>Formulario de Inscripción</h1>
+
+    <form action="gracias.html">
+      <label>Nombre completo:</label>
+      <input type="text" name="nombre" required />
+
+      <br /><br />
+
+      <label>Correo electrónico:</label>
+      <input type="email" name="correo" required />
+
+      <br /><br />
+
+      <label>Cédula o ID:</label>
+      <input type="text" name="cedula" required />
+
+      <br /><br />
+
+      <label>Seleccione el curso:</label>
+
+      <select name="curso" required>
+        <option value="">Seleccione una opción</option>
+        <option value="desarrollo-web">Desarrollo Web</option>
+        <option value="redes">Redes</option>
+        <option value="ciberseguridad">Ciberseguridad</option>
+      </select>
+
+      <br /><br />
+
+      <input type="checkbox" name="terminos" required />
+      <label>Acepto los términos y condiciones</label>
+
+      <br /><br />
+
+      <button type="submit">Inscribirse</button>
+    </form>
+  </body>
+</html>
