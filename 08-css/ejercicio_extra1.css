@@ -1,0 +1,51 @@
+/* Elimina el margen que trae la página por defecto */
+body {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+}
+
+
+/* Barra de navegación */
+.navbar {
+  background-color: #333333;
+
+  width: 100%;
+}
+
+
+/* Lista del menú */
+.navbar ul {
+  display: flex;
+
+  justify-content: center;
+
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Elementos de la lista */
+.navbar li {
+  margin: 0 1rem;
+}
+
+
+/* Enlaces */
+.navbar a {
+  display: block;
+
+  color: white;
+
+  text-decoration: none;
+
+  padding: 1rem 2rem;
+}
+
+
+/* Cuando pasamos el mouse */
+.navbar a:hover {
+  background-color: #4964f5;
+}
