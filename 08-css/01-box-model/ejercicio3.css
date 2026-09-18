@@ -1,0 +1,231 @@
+/* Página */
+body {
+    margin: 0;
+
+    background-color: #f1efef;
+
+    font-family: Arial, sans-serif;
+}
+
+
+/* Contenedor principal */
+.billboard {
+    width: 80%;
+    max-width: 75rem;
+
+    margin: auto;
+
+    padding-top: 3rem;
+}
+
+
+/* Título */
+.title {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+
+    margin-bottom: 2rem;
+}
+
+
+.title h1 {
+    font-size: 2rem;
+
+    margin: 0;
+
+    white-space: nowrap;
+}
+
+
+.title h3 {
+    font-size: 1rem;
+    letter-spacing: 0.1rem;
+
+    margin: 0;
+
+    white-space: nowrap;
+}
+
+
+/* Línea blanca */
+.line {
+    width: 100%;
+    height: 1rem;
+
+    background-color: white;
+}
+
+
+/* Tabla */
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background-color: white;
+}
+
+
+/* Encabezado azul */
+thead {
+    background-color: #244fc4;
+    color: white;
+}
+
+
+th {
+    height: 4rem;
+
+    padding: 0.5rem;
+
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+
+.this-week {
+    text-align: left;
+
+    padding-left: 1.5rem;
+}
+
+
+/* Filas */
+td {
+    height: 7.5rem;
+
+    border-bottom: 1px solid #cccccc;
+}
+
+
+/* Posición */
+.position {
+    width: 7rem;
+
+    background-color: #101116;
+    color: white;
+
+    text-align: center;
+
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+
+/* Portada */
+.cover {
+    width: 7.5rem;
+}
+
+
+.cover img {
+    display: block;
+
+    width: 7.5rem;
+    height: 7.5rem;
+
+    object-fit: cover;
+}
+
+
+/* Información de la canción */
+.song {
+    padding: 0 1.5rem;
+
+    display: flex;
+    align-items: center;
+
+    gap: 1.5rem;
+}
+
+
+.song div {
+    flex: 1;
+}
+
+
+.song strong {
+    display: block;
+
+    font-size: 1.3rem;
+}
+
+
+.song div span {
+  display: block;
+
+  margin-top: 0.2rem;
+
+  font-size: 1rem;
+}
+
+
+/* Signo + */
+.plus {
+    color: #858ca5;
+
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+
+/* Flechas */
+.movement {
+    width: 2rem;
+    height: 2rem;
+
+    border-radius: 50%;
+
+    color: white;
+
+    text-align: center;
+    line-height: 2rem;
+
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+
+.down {
+    background-color: #cc1f26;
+}
+
+
+.up {
+    background-color: green;
+}
+
+
+.same {
+    background-color: #8b93aa;
+}
+
+
+/* Award */
+.award {
+    width: 5rem;
+
+    background-color: #eeeeee;
+
+    text-align: center;
+
+    font-size: 1.5rem;
+}
+
+
+/* Números de la derecha */
+.number {
+    width: 5rem;
+
+    text-align: center;
+
+    font-size: 1.1rem;
+}
+
+
+/* Columna Peak Position */
+.peak {
+    background-color: #eeeeee;
+}
