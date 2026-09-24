@@ -1,0 +1,166 @@
+/* Página completa */
+body {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+
+  color: #2d2e2e;
+  background-color: white;
+}
+
+
+/* Contenedor principal */
+.blog {
+  width: 90%;
+  max-width: 60rem;
+
+  margin: auto;
+
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+
+/* Encabezado */
+.blog-header {
+  text-align: center;
+
+  max-width: 55rem;
+
+  margin: auto;
+}
+
+
+/* Categoría */
+.category {
+  color: #6b6b6b;
+
+  font-size: 0.9rem;
+  font-weight: bold;
+
+  margin-bottom: 1.5rem;
+}
+
+
+/* Título principal */
+.blog-header h1 {
+  font-family: Georgia, serif;
+
+  font-size: 3.5rem;
+  line-height: 1.1;
+
+  margin-bottom: 1.5rem;
+}
+
+
+/* Subtítulo */
+.blog-header h2 {
+  font-size: 1.4rem;
+  font-weight: normal;
+  line-height: 1.5;
+
+  color: #555555;
+
+  margin-bottom: 2rem;
+}
+
+
+/* Autor */
+.author {
+  font-size: 0.9rem;
+
+  color: #666666;
+
+  margin-bottom: 3rem;
+}
+
+
+/* Imagen principal */
+.main-image {
+  display: block;
+
+  width: 100%;
+
+  margin: 0 auto 4rem auto;
+}
+
+
+/* Contenido del artículo */
+.content {
+  max-width: 45rem;
+
+  margin: auto;
+}
+
+
+/* Párrafos */
+.content p {
+  font-size: 1.1rem;
+
+  line-height: 1.8;
+
+  text-align: justify;
+
+  margin-bottom: 1.5rem;
+}
+
+
+/* Títulos de las secciones */
+.content h2 {
+  font-family: Georgia, serif;
+
+  font-size: 2rem;
+
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+
+/* Subtítulos */
+.content h3 {
+  font-size: 1.4rem;
+
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+
+/* Imágenes dentro del artículo */
+.content-image {
+  display: block;
+
+  width: 100%;
+
+  margin: 3rem auto;
+}
+
+
+/* Diseño para teléfonos */
+@media (max-width: 600px) {
+
+  .blog {
+    width: 90%;
+
+    padding-top: 2rem;
+  }
+
+
+  .blog-header h1 {
+    font-size: 2.3rem;
+  }
+
+
+  .blog-header h2 {
+    font-size: 1.1rem;
+  }
+
+
+  .content h2 {
+    font-size: 1.7rem;
+  }
+
+
+  .content p {
+    font-size: 1rem;
+  }
+}

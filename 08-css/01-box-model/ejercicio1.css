@@ -1,0 +1,115 @@
+/* Estilo general de la página */
+body {
+    background-color: #4964f5;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+}
+
+
+/* Caja blanca principal */
+.form-container {
+    background-color: white;
+    max-width: 650px;
+    margin: auto;
+    padding: 70px;
+    border-radius: 20px;
+}
+
+
+/* Línea azul encima del título */
+.blue-line {
+    width: 30px;
+    height: 4px;
+    background-color: #4964f5;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+
+/* Título */
+h1 {
+    color: #303750;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+
+/* Texto debajo del título */
+p {
+    color: #596078;
+    font-size: 17px;
+    margin-bottom: 40px;
+}
+
+
+/* Ocultamos los labels visualmente */
+label {
+    display: none;
+}
+
+
+/* Estilo compartido por los campos */
+input,
+select,
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+
+    background-color: #f3f5f9;
+
+    border: none;
+    border-radius: 6px;
+
+    padding: 20px 25px;
+    margin-bottom: 25px;
+
+    font-size: 16px;
+    color: #596078;
+}
+
+
+/* Altura de los inputs */
+    input,
+    select {
+    height: 65px;
+}
+
+
+/* Caja del mensaje */
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+
+/* Color del texto placeholder */
+    input::placeholder,
+    textarea::placeholder {
+    color: #929ab5;
+}
+
+
+/* Boton */
+    .submit-button {
+    width: 245px;
+
+    background-color: #4964f5;
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    border: none;
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    box-shadow: 0 8px 15px #d8d8d8;
+}
+
+
+/* Cambio cuando pasamos el mouse por el boton */
+    .submit-button:hover {
+    background-color: #3b54df;
+}

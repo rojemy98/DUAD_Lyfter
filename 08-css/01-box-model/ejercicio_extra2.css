@@ -1,0 +1,83 @@
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 2rem;
+
+    font-family: Arial, sans-serif;
+
+    background-color: #eeeeee;
+}
+
+
+/* Título */
+h1 {
+    text-align: center;
+
+    margin-bottom: 2rem;
+}
+
+
+/* Contenedor de las secciones */
+.sections-container {
+    display: flex;
+
+    gap: 1.5rem;
+}
+
+
+/* Cada sección */
+section {
+    width: 33.33%;
+
+    background-color: white;
+
+    padding: 1.5rem;
+
+    box-sizing: border-box;
+
+    border-radius: 0.5rem;
+}
+
+
+/* Título de cada sección */
+section h2 {
+    margin-top: 0;
+}
+
+
+/* Texto */
+section p {
+    line-height: 1.5;
+
+    text-align: justify;
+}
+
+
+/* =========================
+   PANTALLAS MEDIANAS
+   ========================= */
+
+@media (max-width: 900px) {
+
+    .sections-container {
+        flex-wrap: wrap;
+    }
+
+    section {
+        width: 48%;
+    }
+
+}
+
+
+/* =========================
+   PANTALLAS PEQUEÑAS
+   ========================= */
+
+@media (max-width: 600px) {
+
+    section {
+        width: 100%;
+    }
+
+}
