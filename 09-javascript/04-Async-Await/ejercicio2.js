@@ -4,14 +4,33 @@
 async function getUser() {
     try {
         const response = await fetch("https://reqres.in/api/users/23");
+
         if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
+            if (response.status === 404) {
+                throw new Error("Usuario no encontrado.");
+            }
+
+            if (response.status === 401) {
+                throw new Error("No autorizado para consultar el usuario.");
+            }
+
+            if (response.status >= 500) {
+                throw new Error("Error del servidor. Intente más tarde.");
+            }
+
+            throw new Error(`Error HTTP: ${response.status}`);
         }
 
         const result = await response.json();
-        console.log(result);
+
+        console.log(result.data);
+
     } catch (error) {
-        console.error(error.message);
+        if (error instanceof TypeError) {
+            console.error("Error de red. Verifique su conexión.");
+        } else {
+            console.error(error.message);
+        }
     }
 }
 

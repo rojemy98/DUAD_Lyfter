@@ -4,38 +4,32 @@
 
 const words = ["very", "dogs", "cute", "are"];
 
-const promises = words.map(word => {
+const completedWords = [];
+
+const promises = words.map((word, index) => {
+    // El tiempo depende de la posicion, no de la palabra.
+    const delay = index % 2 === 0
+        ? (index / 2 + 3) * 1000
+        : ((index + 1) / 2) * 1000;
+
     return new Promise(resolve => {
-        let delay;
-
-        switch (word) {
-            case "dogs":
-                delay = 1000;
-                break;
-            case "are":
-                delay = 2000;
-                break;
-            case "very":
-                delay = 3000;
-                break;
-            case "cute":
-                delay = 4000;
-                break;
-        }
-
         setTimeout(() => {
+            completedWords.push(word);
+            console.log(`Palabra recibida: ${word}`);
+
             resolve(word);
         }, delay);
     });
 });
 
 Promise.all(promises)
-    .then(results => {
+    .then(() => {
+        const sentence = completedWords.join(" ");
+
         console.log(
-            results[1].charAt(0).toUpperCase() +
-            results[1].slice(1) + " " +
-            results[3] + " " +
-            results[0] + " " +
-            results[2]
+            sentence.charAt(0).toUpperCase() + sentence.slice(1)
         );
+    })
+    .catch(error => {
+        console.error("Error:", error);
     });
