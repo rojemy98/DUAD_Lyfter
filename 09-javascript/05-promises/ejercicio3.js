@@ -4,13 +4,14 @@
 
 const words = ["very", "dogs", "cute", "are"];
 
+// Tiempo de espera en segundos para cada posicion:
+// very: 3 s, dogs: 1 s, cute: 4 s, are: 2 s.
+const delays = [3, 1, 4, 2];
+
 const completedWords = [];
 
 const promises = words.map((word, index) => {
-    // El tiempo depende de la posicion, no de la palabra.
-    const delay = index % 2 === 0
-        ? (index / 2 + 3) * 1000
-        : ((index + 1) / 2) * 1000;
+    const delay = delays[index] * 1000;
 
     return new Promise(resolve => {
         setTimeout(() => {

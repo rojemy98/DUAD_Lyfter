@@ -18,21 +18,21 @@ searchButton.addEventListener("click", async function () {
             `https://reqres.in/api/users/${userId}`
         );
 
-    if (!response.ok) {
-                if (response.status === 404) {
-                    throw new Error("User not found.");
-                }
-
-                if (response.status === 401) {
-                    throw new Error("Unauthorized request.");
-                }
-
-                if (response.status >= 500) {
-                    throw new Error("Server error. Please try again later.");
-                }
-
-                throw new Error(`HTTP error: ${response.status}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("User not found.");
             }
+
+            if (response.status === 401) {
+                throw new Error("Unauthorized request.");
+            }
+
+            if (response.status >= 500) {
+                throw new Error("Server error. Please try again later.");
+            }
+
+            throw new Error(`HTTP error: ${response.status}`);
+        }
 
         const data = await response.json();
         const user = data.data;
