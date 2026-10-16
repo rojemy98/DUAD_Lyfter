@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil | User Management</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/perfil.js" defer></script>
+</head>
+<body>
+  <main class="page page-wide">
+    <section class="panel">
+      <div class="profile-header">
+        <div>
+          <div class="eyebrow">USER MANAGEMENT</div>
+          <h1>Mi perfil</h1>
+          <p class="muted">Estos son los datos asociados a tu cuenta.</p>
+        </div>
+        <button id="logout-button" type="button" class="button button-secondary">Cerrar sesión</button>
+      </div>
+      <p id="message" class="message" role="status" aria-live="polite"></p>
+      <div id="profile-cards" class="cards" aria-live="polite"></div>
+      <div class="actions">
+        <a class="button button-secondary link-button" href="cambio-password.html">Cambiar contraseña</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
