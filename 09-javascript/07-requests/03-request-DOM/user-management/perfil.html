@@ -1,32 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi perfil | User Management</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="js/api.js" defer></script>
-  <script src="js/auth.js" defer></script>
-  <script src="js/perfil.js" defer></script>
-</head>
-<body>
-  <main class="page page-wide">
-    <section class="panel">
-      <div class="profile-header">
-        <div>
-          <div class="eyebrow">USER MANAGEMENT</div>
-          <h1>Mi perfil</h1>
-          <p class="muted">Estos son los datos asociados a tu cuenta.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi perfil | User Management</title>
+
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/api.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/perfil.js" defer></script>
+  </head>
+  <body>
+    <main class="page page-wide">
+      <section class="panel">
+        <div class="profile-header">
+          <div>
+            <div class="eyebrow">USER MANAGEMENT</div>
+            <h1>Mi perfil</h1>
+            <p class="muted">Estos son los datos asociados a tu cuenta.</p>
+          </div>
+
+          <button
+            id="logout-button"
+            type="button"
+            class="button button-secondary"
+          >
+            Cerrar sesión
+          </button>
         </div>
-        <button id="logout-button" type="button" class="button button-secondary">Cerrar sesión</button>
-      </div>
-      <p id="message" class="message" role="status" aria-live="polite"></p>
-      <div id="profile-cards" class="cards" aria-live="polite"></div>
-      <div class="actions">
-        <a class="button button-secondary link-button" href="cambio-password.html">Cambiar contraseña</a>
-      </div>
-    </section>
-  </main>
-</body>
+
+        <p id="message" class="message" role="status" aria-live="polite"></p>
+
+        <div id="profile-cards" class="cards" aria-live="polite"></div>
+
+        <div class="actions">
+          <button id="edit-profile-button" type="button" class="button">
+            Editar perfil
+          </button>
+
+          <a
+            class="button button-secondary link-button"
+            href="cambio-password.html"
+          >
+            Cambiar contraseña
+          </a>
+        </div>
+
+        <!-- Formulario para editar el perfil -->
+        <form id="edit-profile-form" class="edit-form hidden">
+          <h2>Editar información</h2>
+
+          <p class="muted">
+            Modifica tu nombre y dirección. Los demás datos se conservarán.
+          </p>
+
+          <label for="edit-name">Nombre</label>
+          <input
+            id="edit-name"
+            name="name"
+            type="text"
+            maxlength="100"
+            required
+          />
+
+          <label for="edit-address">Dirección</label>
+          <input
+            id="edit-address"
+            name="address"
+            type="text"
+            maxlength="200"
+            required
+          />
+
+          <div class="actions">
+            <button id="save-profile-button" type="submit" class="button">
+              Guardar
+            </button>
+
+            <button
+              id="cancel-edit-button"
+              type="button"
+              class="button button-secondary"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </body>
 </html>

@@ -5,6 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const message = document.querySelector("#message");
   const submitButton = form.querySelector('button[type="submit"]');
 
+  // Mostrar el mensaje enviado desde una página protegida
+  const flashMessage = consumeFlashMessage();
+
+  if (flashMessage) {
+    setMessage(message, flashMessage, "error");
+  }
+
+  if (redirectIfLoggedIn()) return;
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     setMessage(message, "");

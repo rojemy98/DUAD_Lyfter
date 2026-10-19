@@ -37,3 +37,29 @@ a { color: #315dc4; font-weight: 650; }
 .card-value { margin: 0; font-size: 1rem; font-weight: 650; white-space: pre-wrap; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
 @media (max-width: 520px) { .profile-header { flex-direction: column; } .profile-header .button { width: 100%; } }
+
+
+/* Formulario para editar el perfil */
+
+.hidden {
+  display: none !important;
+}
+
+.edit-form {
+  margin-top: 26px;
+  padding-top: 24px;
+  border-top: 1px solid #e4e9f2;
+}
+
+.edit-form h2 {
+  margin: 0 0 8px;
+  font-size: 1.25rem;
+}
+
+.edit-form .muted {
+  margin-bottom: 18px;
+}
+
+.edit-form .actions {
+  margin-top: 10px;
+}
