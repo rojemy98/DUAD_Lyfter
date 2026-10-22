@@ -51,10 +51,14 @@ async function updateObject(id, newData) {
     }
 }
 
-updateObject("ff808181a09d98f701a14143b24c6c78", {
-    name: "Samsung Galaxy S25",
+const object = {
+    name: "Predator Football Boots",
     data: {
-        color: "Blue",
-        capacity: "512 GB"
+        brand: "Adidas",
+        material: "Synthetic leather",
+        size: "9 US",
+        water_resistant: true
     }
-});
+};
+
+updateObject("ff808181a09d98f701a14143b24c6c78", object)

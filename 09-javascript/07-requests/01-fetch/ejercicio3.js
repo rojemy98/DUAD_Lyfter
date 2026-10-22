@@ -7,11 +7,11 @@ async function getObject(id) {
 
         if (!response.ok) {
             if (response.status === 404) {
-                throw new Error("Usuario no encontrado.");
+                throw new Error("Articulo no encontrado.");
             }
 
             if (response.status === 401) {
-                throw new Error("No autorizado para consultar el usuario.");
+                throw new Error("No autorizado para consultar el articulo.");
             }
 
             if (response.status >= 500) {
@@ -24,6 +24,8 @@ async function getObject(id) {
         const result = await response.json();
 
         console.log(result);
+
+        return result;
         
     } catch (error) {
         if (error instanceof TypeError) {
@@ -31,6 +33,8 @@ async function getObject(id) {
         } else {
             console.error(error.message);
         }
+
+    return null;
     }
 }
 

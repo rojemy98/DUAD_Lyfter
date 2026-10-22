@@ -18,20 +18,44 @@ async function createObject(newObject) {
         );
 
         if (!response.ok) {
+            if (response.status === 400) {
+                throw new Error("Datos inválidos. Verifique la información del objeto.");
+            }
+
+            if (response.status === 401) {
+                throw new Error("No autorizado para crear el objeto.");
+            }
+
+            if (response.status === 403) {
+                throw new Error("No tiene permisos para crear el objeto.");
+            }
+
+            if (response.status >= 500) {
+                throw new Error("Error del servidor. Intente más tarde.");
+            }
+
             throw new Error(`Error HTTP: ${response.status}`);
         }
 
         const result = await response.json();
-
-        console.log("Objet created successfully:");
+        
+        console.log("Object created successfully:");
         console.log(result);
 
+        return result;
+
     } catch (error) {
-        console.error("Error:", error.message);
+        if (error instanceof TypeError) {
+            console.error("Error de red. Verifique su conexión.");
+        } else {
+            console.error("Error:", error.message);
+        }
+
+        throw error;
     }
 }
 
-object = {
+const object = {
     "name": "Air Zoom Running Shoes",
     "data":{
         "brand": "Nike",

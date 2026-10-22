@@ -27,7 +27,7 @@ async function getObjects() {
             object => object.data !== null && object.data !== undefined
         );
 
-        console.log(filteredObjects);
+        console.table(filteredObjects);
 
         return filteredObjects;
         

@@ -38,10 +38,14 @@ async function createObject(newData) {
     }
 }
 
-createObject({
-    name: "Samsung Galaxy S25",
+const object = {
+    name: "Pro Tennis Racket",
     data: {
-        color: "Blue",
-        capacity: "256 GB"
+        brand: "Wilson",
+        material: "Graphite",
+        size: "27 inches",
+        water_resistant: false
     }
-});
+};
+
+createObject(object);

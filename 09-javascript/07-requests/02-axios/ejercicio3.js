@@ -4,7 +4,7 @@ const axios = require("axios");
 
 async function getObject(id) {
     try {
-        const response = await axios.get(`https://api.restful-api.dev/objects${id}`);
+        const response = await axios.get(`https://api.restful-api.dev/objects/${id}`);
 
         console.log(response.data);
 
@@ -31,3 +31,5 @@ async function getObject(id) {
     }
 }
 
+
+getObject(2);

@@ -37,10 +37,14 @@ async function updateObject(id, newData) {
     }
 }
 
-updateObject("7", {
-    name: "Samsung Galaxy S25",
+const object = {
+    name: "Pro Basketball",
     data: {
-        color: "Black",
-        capacity: "512 GB"
+        brand: "Spalding",
+        material: "Composite leather",
+        size: "Size 7",
+        water_resistant: true
     }
-});
+};
+
+updateObject("ff808181a09d98f701a14143b24c6c78", object);
