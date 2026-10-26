@@ -1,0 +1,14 @@
+
+# Dependencias de Node.js
+node_modules/
+
+# Variables de entorno
+.env
+.env.*
+
+# Excepciones para archivos de ejemplo
+!.env.example
+
+# Archivos y carpetas de sistema
+.DS_Store
+Thumbs.db
