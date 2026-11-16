@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista Ordenada</title>
+  </head>
+  <body>
+    <h1>Lista de elementos</h1>
+
+    <input type="text" id="itemInput" placeholder="Escribe un elemento" />
+
+    <button id="addButton">Agregar elemento</button>
+    <button id="clearButton">Limpiar lista</button>
+
+    <ol id="itemList"></ol>
+
+    <script>
+      const input = document.getElementById("itemInput");
+      const addButton = document.getElementById("addButton");
+      const clearButton = document.getElementById("clearButton");
+      const list = document.getElementById("itemList");
+
+      // Add an item to the list
+      addButton.addEventListener("click", function () {
+        const itemText = input.value.trim();
+
+        if (itemText !== "") {
+          const newItem = document.createElement("li");
+
+          newItem.textContent = itemText;
+
+          list.appendChild(newItem);
+
+          input.value = "";
+          input.focus();
+        }
+      });
+
+      // Clear all items from the list
+      clearButton.addEventListener("click", function () {
+        list.innerHTML = "";
+      });
+    </script>
+  </body>
+</html>

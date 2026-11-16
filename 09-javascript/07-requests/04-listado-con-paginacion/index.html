@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Paginación con Axios</title>
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Biblioteca Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Nuestro JavaScript -->
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="container">
+      <h1>Listado de objetos</h1>
+
+      <p id="status">Cargando objetos...</p>
+
+      <section id="objects-container"></section>
+
+      <div class="pagination">
+        <button id="previous-btn" disabled>Anterior</button>
+
+        <span id="page-info">Página 1</span>
+
+        <button id="next-btn" disabled>Siguiente</button>
+      </div>
+    </main>
+  </body>
+</html>

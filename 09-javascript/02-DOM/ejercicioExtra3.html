@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task List</title>
+  </head>
+  <body>
+    <h1>Lista de tareas</h1>
+
+    <input type="text" id="taskInput" placeholder="Escribe una tarea" />
+
+    <button id="addButton">Agregar tarea</button>
+
+    <ul id="taskList"></ul>
+
+    <script>
+      const taskInput = document.getElementById("taskInput");
+      const addButton = document.getElementById("addButton");
+      const taskList = document.getElementById("taskList");
+
+      addButton.addEventListener("click", function () {
+        const taskText = taskInput.value.trim();
+
+        if (taskText !== "") {
+          // Create the list item
+          const taskItem = document.createElement("li");
+
+          // Add the task text
+          taskItem.textContent = taskText;
+
+          // Create the delete button
+          const deleteButton = document.createElement("button");
+          deleteButton.textContent = "Eliminar";
+
+          // Add delete functionality
+          deleteButton.addEventListener("click", function () {
+            taskItem.remove();
+          });
+
+          // Add the button to the task
+          taskItem.appendChild(deleteButton);
+
+          // Add the task to the list
+          taskList.appendChild(taskItem);
+
+          // Clear the input
+          taskInput.value = "";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mostrar datos</title>
+  </head>
+  <body>
+    <h1>Mostrar datos</h1>
+
+    <input type="text" id="textInput" placeholder="Escribe algo" />
+
+    <button id="showButton">Mostrar</button>
+
+    <p id="result"></p>
+
+    <script>
+      const input = document.getElementById("textInput");
+      const button = document.getElementById("showButton");
+      const result = document.getElementById("result");
+
+      button.addEventListener("click", function () {
+        // Get the input value
+        const data = input.value;
+
+        // Replace the previous content
+        result.textContent = data;
+
+        // Clear the input
+        input.value = "";
+      });
+    </script>
+  </body>
+</html>
